@@ -864,6 +864,8 @@ function deskSettings(db,sc){const F=B.forms||{},bk=(S.D&&S.D.bk)||{name:'',pos:
  st.rules=Object.assign(st.rules||{},{canvass:B.rules.canvass,wageCap:B.rules.wage,mobileCap:B.rules.mobile,maintBal:+F.maintBal||0,deadlines:B.rules.deadlines||'03-31, 06-30, 09-30, 12-15',brsDay:B.rules.brsDay||10});
  const cbs=(S.D&&S.D.checkbooks)||[];if(cbs.length)st.checkbooks=cbs.map(b=>({from:String(b.from),to:String(b.to),received:b.received||''}));
  const hs=new Set(String(st.rules.holidays||'').split(/[\s,;]+/).filter(Boolean));String(F.holidays||'').split(/[\s,;]+/).filter(Boolean).forEach(h=>hs.add(h));st.rules.holidays=[...hs].sort().join(', ');return db}
+/* same as the Desk's mig28: checks saved before version 28 keep their forms (the ₱1,000 purchase request rule applies to new checks) */
+function mig28p(d){if(d&&(d.rv||0)<28){(d.checks||[]).forEach(c=>{if(c.pc===undefined)c.pc=false});d.rv=28}return d}
 function deskFromPortal(L){const ca={};L.subs.forEach(x=>{ca[x.q]={ada:x.ada||'',adaDate:x.adaDate||'',amount:x.ca||0,prevAda:'',prevAdaDate:'',prevAmt:x.prevAmt||0,regNo:'',...(x.rel||{})}});const funds={};(L.funds||[]).forEach(f=>{funds[f.id]=fundFromPortal(f)});
  const checks=L.checks.filter(c=>c.mode!=='Cash'&&c.mode!=='ADA').map(c=>{const R=c.receipts||[],tax=+c.tax||0,ls=(c.lines||[[c.code,c.amount]]).filter(l=>l[0]&&l[0]!=='multi');let items;
   if(c.mode==='Cancelled')items=[];
@@ -910,7 +912,7 @@ window.addEventListener('beforeunload',e=>{try{if(window.__desk&&window.__desk.u
 async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerHTML;$('#app').innerHTML='<div class="loading">Opening the Liquidation Desk…</div>';
  try{/* the Desk page is fetched every time (with the data, at the same moment), so a portal left open never keeps an older Desk */
   const [dp,L]=await Promise.all([call('deskPage'),call('deskLoad',{school:sc.id,tab:DESK_TAB})]);S.deskHtml=dp.html;
-  const ro=L.readonly,me=B.me.username;let db=null;try{db=L.json?JSON.parse(L.json):null}catch(e){}const fresh=!db||db.v!==2;if(fresh)db=deskFromPortal(L);
+  const ro=L.readonly,me=B.me.username;let db=null;try{db=L.json?JSON.parse(L.json):null}catch(e){}const fresh=!db||db.v!==2;if(fresh)db=deskFromPortal(L);mig28p(db);
   let rev=L.rev||0,baseJson=fresh?'':L.json,dirty=fresh,timer=null,busyS=false,again=false,wait=3000,closed=false,closing=false,expired=false,editors=L.editors||[],lastBy='';
   /* work kept on this computer that never reached the portal */
   const dr=ro?null:getDraft(sc.id);let recovered='';
@@ -944,7 +946,7 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
   const reconcile=async()=>{if(ro||dirty)return send();try{const r=await deskCall('deskSave',{school:sc.id,rev,qs:payload(),tab:DESK_TAB});if(r.conflict)return pull(r.by);if(r.editors)who(r.editors);report(r)}catch(e){if(e&&e.error==='nosession')fail(e)}};
   /* someone else saved: load their copy while this person is not typing */
   const pull=async by=>{if(closed||dirty||busyS||typing())return;try{const L2=await deskCall('deskLoad',{school:sc.id,tab:DESK_TAB});if(closed||dirty||busyS||typing())return;
-   const d2=JSON.parse(L2.json||'null');if(!d2||d2.v!==2)return;const per=db.period;into(db,d2);db.period=per;deskSettings(db,sc);deskFunds(db,L2);rev=L2.rev;baseJson=L2.json;L.locked=L2.locked||{};deskQs(db).forEach(q=>keys.add(q));
+   const d2=JSON.parse(L2.json||'null');if(!d2||d2.v!==2)return;const per=db.period;into(db,mig28p(d2));db.period=per;deskSettings(db,sc);deskFunds(db,L2);rev=L2.rev;baseJson=L2.json;L.locked=L2.locked||{};deskQs(db).forEach(q=>keys.add(q));
    if(L2.editors)who(L2.editors);redraw();status('Updated with the latest changes'+(by?' from '+by:''))}catch(e){}};
   const tick=async()=>{if(closed||document.hidden)return;try{const r=await deskCall('deskPing',{school:sc.id,tab:DESK_TAB});who(r.editors);lastBy=r.by||lastBy;if(r.rev>rev)pull(r.by)}catch(e){if(e&&e.error==='nosession'&&!ro&&dirty)fail(e)}};
   const pinger=setInterval(tick,40000);
