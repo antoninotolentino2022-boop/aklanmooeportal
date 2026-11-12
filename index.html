@@ -124,6 +124,11 @@ input,select,textarea{border:1px solid var(--line);background:var(--bg);border-r
 .page figcaption{font-size:9.5pt;margin-top:5px}.page .sig{width:45%;margin:22px 0 0 auto;text-align:center;font-size:10pt}.page .sig .nm{border-bottom:1px solid #000;font-weight:700;margin-top:30px;text-transform:uppercase}
 .printbar{position:sticky;top:0;background:var(--panel);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;align-items:center;margin-bottom:16px}
 @media print{body{background:#fff}.topbar,.test,#app,.printbar,.toast{display:none!important}#print{display:block!important}#print .formwrap{overflow:visible;padding:0}#print .sheet{box-shadow:none;margin:0;width:auto!important;max-width:none;padding:0;break-after:page}#print .sheet:last-child{break-after:auto}#print .sheet.land{page:land}.page{box-shadow:none;margin:0;width:7.4in;min-height:0;padding:0;break-after:page}.page .grid{grid-template-columns:3.6in 3.6in;gap:.2in}.page figure img{height:3.5in}@page{size:8.5in 13in;margin:.5in}}
+/* Version 30: small polish on screen (printed pages are not changed) */
+.showpw{display:flex;gap:7px;align-items:center;font-weight:500;color:var(--muted);cursor:pointer;margin-top:-4px}.showpw input{width:auto;margin:0;accent-color:var(--accent)}
+@media screen{input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+ input[type=checkbox]:focus,input[type=radio]:focus,input[type=file]:focus{box-shadow:none;outline:2px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:2px}
+ .btn{transition:background .12s,border-color .12s,filter .12s,transform .05s}.btn:active:not(:disabled){transform:translateY(1px)}.btn.primary:hover:not(:disabled){filter:brightness(1.08)}}
 </style></head><body>
 <header class="topbar"><div class="topin"><div class="brand"><img id="logo" alt="Division of Aklan logo" hidden><div><div class="t">Division of Aklan MOOE Liquidation Portal</div><small>Designed and developed by: Antoniño F. Tolentino, Head Teacher I, Camanci Sur Elementary School</small></div></div>
 <nav class="navl" aria-label="Pages"><button data-page="help">Help</button><button data-page="support">Support</button><button data-page="credits">Credits</button><button data-page="about">About</button></nav><div class="who" id="who"></div></div></header>
@@ -146,6 +151,8 @@ if(!(window.google&&window.google.script&&window.google.script.run)){
 const CODES={'5020101000':'Travelling Expenses - Local','5020201000':'Training Expenses','5020301000':'Office Supplies Expenses','5020302000':'Accountable Forms Expenses','5020309000':'Fuel, Oil and Lubricants Expenses','5020321000':'Semi-Expendable Machinery and Equipment Expenses','5020322000':'Semi-Expendable Furniture, Fixtures and Books Expenses','5020399000':'Other Supplies Expenses','5020401000':'Water Expenses','5020402000':'Electricity Expenses','5020501000':'Postage and Courier Services','5020502001':'Telephone Expenses - Mobile','5020502002':'Telephone Expenses - Landline','5020503000':'Internet Expenses','5021101000':'Legal Expenses','5021199000':'Other Professional Services','5021202000':'Janitorial Services','5021203000':'Security Services','5021299000':'Other General Services','5021304000':'Repairs and Maintenance - Buildings and Other Structures','5021305000':'Repairs and Maintenance - Machinery and Equipment','5021307000':'Repairs and Maintenance - Furniture and Fixtures','5021501000':'Taxes, Duties and Licenses','5021502000':'Fidelity Bond Premiums','5029902000':'Printing and Publication Expenses','5029904000':'Transportation and Delivery Expenses','5029905000':'Rent/Lease Expenses','5029999000':'Other Maintenance and Operating Expenses'};
 const TYPE_CODE={checks:'5020302000',supplies:'5020301000',othersup:'5020399000',printing:'5029902000',semiexp:'5020321000',fuel:'5020309000',repbldg:'5021304000',replabor:'5021304000',repmach:'5021305000',repfurn:'5021307000',electricity:'5020402000',water:'5020401000',internet:'5020503000',landline:'5020502002',mobile:'5020502001',travel:'5020101000',training:'5020201000',janitorial:'5021202000',general:'5021299000',security:'5021203000',hauling:'5029904000',postage:'5020501000',taxes:'5021501000',fidelity:'5021502000',reimb:'5020301000',other:'5029999000'};
 const ST={draft:'Not yet submitted',submitted:'Waiting for district check',returned:'Returned to school',district_ok:'Waiting for division',verified:'Verified – liquidated'};
+/* "Show password" under a password box: what was typed can be checked before signing in (version 30) */
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-showpw]'))return;(t.closest('form')||document).querySelectorAll('input[autocomplete$="password"]').forEach(i=>{i.type=t.checked?'text':'password'})});
 const STAGES=['Check','Receipt','Items delivered','Before','During','After','Activity','Other'],STAGEL={Check:'Check (issued)',Receipt:'Official receipt / invoice'},stL=k=>STAGEL[k]||k;
 const ORD=['1st','2nd','3rd','4th'];
 const HEADS_ROLE=['School Head','Head of office'];
@@ -214,7 +221,7 @@ async function boot(){if(!TOKEN){showLogin();return}try{B=await call('boot');if(
  catch(e){if(e.error!=='nosession'){$('#app').innerHTML=`<div class="note err"><b>The portal could not load</b>${esc(e.error)}</div><div class="row" style="margin-top:12px"><button class="btn primary" id="retry">Try again</button><button class="btn" id="retryOut">Sign out</button></div>`;$('#retry').onclick=()=>{$('#app').innerHTML='<div class="loading">Loading…</div>';boot()};$('#retryOut').onclick=signOut}}}
 function showLogin(msg){B=null;Object.assign(S,{mon:false,my:'',mdist:null,afilter:'',tab:'schools',shown:null,leaving:null,open:null,openP:'',office:false,rcpCheck:null,photoCheck:null,sfilter:'all',dfilter:'all'});$('#who').innerHTML='';$('#testbar').hidden=true;PAGE='';document.querySelectorAll('[data-page]').forEach(b=>b.classList.remove('on'));$('#app').innerHTML=`<div class="hero"><img id="heroLogo" alt="Division of Aklan logo" ${BR.logo?`src="${BR.logo}"`:'hidden'}><h1>Division of Aklan MOOE Liquidation Portal</h1><p class="by">Designed and developed by: Antoniño F. Tolentino, Head Teacher I, Camanci Sur Elementary School</p></div>
  <div class="card stack" style="max-width:420px;margin:18px auto 0"><div><h1>Sign in</h1><p class="sub" style="margin:0">Your username is your <b>School ID</b> and your post, for example <b>114245-SH</b> for the School Head or <b>114245-AO</b> for the AO.</p></div>
- ${msg?`<div class="note ret">${esc(msg)}</div>`:''}<form id="lf" class="stack" autocomplete="on"><label class="f">Username<input id="lu" name="username" autocomplete="username" autocapitalize="characters" placeholder="e.g. 114245-SH" required></label><label class="f">Password<input id="lp" name="password" type="password" autocomplete="current-password" required></label>
+ ${msg?`<div class="note ret">${esc(msg)}</div>`:''}<form id="lf" class="stack" autocomplete="on"><label class="f">Username<input id="lu" name="username" autocomplete="username" autocapitalize="characters" placeholder="e.g. 114245-SH" required></label><label class="f">Password<input id="lp" name="password" type="password" autocomplete="current-password" required></label><label class="small showpw"><input type="checkbox" data-showpw> Show password</label>
  <button class="btn primary" id="lb">Sign in</button><p class="small muted" id="hint" style="margin:0"></p></form>
  <button class="btn" id="toClaim" style="white-space:normal;line-height:1.3">First time or forgot password? Use a sign-in code</button><p class="small muted" style="margin:0">Get your sign-in code from your District Supervisor or District Bookkeeper. District and Division staff get theirs from the Division.</p>${ON_GOOGLE?`<p class="small" style="margin:0">New address: <b>${SITE}</b>. It opens faster and also works when the browser is signed in to several Google accounts.</p>`:''}<p class="small muted" style="margin:0">Pilot for testing and presentation only.</p></div>`;
  $('#toClaim').onclick=()=>showClaim();
@@ -232,7 +239,7 @@ function claimStep2(r,code){const was=r.holder;
  $('#app').innerHTML=card(480,`<button class="btn link" id="cBack" style="align-self:flex-start">← Back</button><div><h1>${esc(r.username)}</h1><p class="sub" style="margin:0">${esc(r.label)}</p></div>
  <form id="cf2" class="stack">${was?`<div class="checks"><div class="small muted">This account is held by <b>${esc(was)}</b>${r.position?' · '+esc(r.position):''}.</div><label><input type="radio" name="who" value="same" checked> I am ${esc(was)}. I forgot my password.</label><label><input type="radio" name="who" value="new"> I am the new holder of this post (transfer, retirement or new designation).</label></div>`:''}
  <div id="c-new" class="fgrid" ${was?'hidden':''}><label class="f">Your full name<input id="c-name" autocomplete="name" placeholder="e.g. Juan P. Dela Cruz"></label><label class="f">Position<input id="c-pos" placeholder="e.g. School Principal I"></label></div>
- <label class="f">Choose a password (at least 8 characters)<input id="c-pw" type="password" autocomplete="new-password" required></label><label class="f">Type it again<input id="c-pw2" type="password" autocomplete="new-password" required></label>
+ <label class="f">Choose a password (at least 8 characters)<input id="c-pw" type="password" autocomplete="new-password" required></label><label class="f">Type it again<input id="c-pw2" type="password" autocomplete="new-password" required></label><label class="small showpw"><input type="checkbox" data-showpw> Show password</label>
  <button class="btn primary" id="c-go">Save and sign in</button><p class="small muted" id="hint" style="margin:0"></p></form>`);
  $('#cBack').onclick=()=>showClaim(r.username);
  document.querySelectorAll('[name=who]').forEach(x=>x.onchange=()=>{$('#c-new').hidden=$('[name=who]:checked').value==='same'});
@@ -926,7 +933,7 @@ const whenD=t=>new Date(t).toLocaleString('en-PH',{month:'short',day:'numeric',h
 window.addEventListener('beforeunload',e=>{try{if(window.__desk&&window.__desk.unsaved()){e.preventDefault();e.returnValue='';return ''}}catch(_){}});
 async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerHTML;$('#app').innerHTML='<div class="loading">Opening the Liquidation Desk…</div>';
  try{/* the Desk page is fetched every time (with the data, at the same moment), so a portal left open never keeps an older Desk */
-  const [dp,L,PH0]=await Promise.all([call('deskPage'),call('deskLoad',{school:sc.id,tab:DESK_TAB}),call('photoList',{school:sc.id}).catch(()=>[])]);S.deskHtml=dp.html;let PHL=PH0||[];const phD={};
+  const [dp,L,PH0]=await Promise.all([call('deskPage'),call('deskLoad',{school:sc.id,tab:DESK_TAB}),call('photoList',{school:sc.id}).catch(()=>[])]);S.deskHtml=dp.html;let PHL=PH0||[];const phD={},noOf={};
   const ro=L.readonly,me=B.me.username;let db=null;try{db=L.json?JSON.parse(L.json):null}catch(e){}const fresh=!db||db.v!==2;if(fresh)db=deskFromPortal(L);mig28p(db);
   let rev=L.rev||0,baseJson=fresh?'':L.json,dirty=fresh,timer=null,busyS=false,again=false,wait=3000,closed=false,closing=false,expired=false,editors=L.editors||[],lastBy='';
   /* work kept on this computer that never reached the portal */
@@ -935,6 +942,13 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
    if(dr.rev===rev||!dr.base)db=mine;else db=deskMerge(JSON.parse(dr.base),mine,db).db;recovered=whenD(dr.t);dirty=true}catch(e){}}
   deskSettings(db,sc);deskFunds(db,L);if(/^\d{4}-Q[1-4]$/.test(S.q))db.period=S.q;if(S.D&&S.D.sub&&S.D.sub.fund&&(db.funds||{})[S.D.sub.fund])db.period='F:'+S.D.sub.fund;
   let keys=new Set(deskQs(db));
+  /* photos are filed under the check number: when a number is corrected in the Desk, its photos follow it (version 30) */
+  const noNow=()=>{const m={};(db.checks||[]).forEach(c=>{const n=String(c.no||'').trim();if(n)m[c.id]=n});return m};
+  const noKeep=()=>{Object.keys(noOf).forEach(k=>delete noOf[k]);Object.assign(noOf,noNow())};noKeep();
+  const phFollow=async()=>{try{const cur=noNow(),used=new Set(Object.values(cur));let moved=0;
+   for(const id of Object.keys(cur)){const was=noOf[id],now=cur[id];if(was&&was!==now&&!used.has(was)&&PHL.some(x=>String(x.checkNo)===was)){const r=await deskCall('photosRenumber',{school:sc.id,from:was,to:now});moved+=(r&&r.moved)||0}}
+   noKeep();if(moved){PHL=await deskCall('photoList',{school:sc.id});redraw()}}catch(e){}};
+  const phRefresh=async()=>{try{PHL=await deskCall('photoList',{school:sc.id});if(!typing())redraw()}catch(e){}};
   const frame=()=>document.querySelector('#deskwrap iframe');
   const status=t=>{try{window.__desk&&window.__desk.onStatus&&window.__desk.onStatus(t)}catch(e){}};
   const who=list=>{editors=list||editors;const o=editors.filter(x=>!x.self),s=editors.some(x=>x.self);
@@ -954,7 +968,7 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
     if(r.conflict){const by1=r.by||lastBy,theirs=JSON.parse(r.json),m=deskMerge(baseJson?JSON.parse(baseJson):{},db,theirs);into(db,m.db);deskSettings(db,sc);rev=r.rev;baseJson=r.json;redraw();
      json=JSON.stringify(db);r=await deskCall('deskSave',{school:sc.id,json,rev,qs:payload(),tab:DESK_TAB});if(r.conflict){again=true;throw {error:'someone else is saving at the same moment'}}
      extra=m.clash.length?'You and '+(by1||'another user')+' both changed '+m.clash.slice(0,3).join(', ')+(m.clash.length>3?' and more':'')+'; your version was kept.':'Combined with the changes saved by '+(by1||'another user')+'.'}
-    rev=r.rev;baseJson=json;dirty=JSON.stringify(db)!==json;if(dirty)keep();else putDraft(sc.id,null);wait=3000;if(r.editors)who(r.editors);report(r,extra)}
+    rev=r.rev;baseJson=json;dirty=JSON.stringify(db)!==json;if(dirty)keep();else putDraft(sc.id,null);wait=3000;if(r.editors)who(r.editors);report(r,extra);if(!ro)phFollow()}
    catch(e){failed=true;fail(e)}
    finally{busyS=false;if(again&&!expired&&!closed){again=false;clearTimeout(timer);timer=setTimeout(send,failed?wait:1500);if(failed)wait=Math.min(wait*2,60000)}}};
   /* when the Desk opens, bring the portal's checks in line with it (for example after a quarter was returned) */
@@ -962,8 +976,8 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
   /* someone else saved: load their copy while this person is not typing */
   const pull=async by=>{if(closed||dirty||busyS||typing())return;try{const L2=await deskCall('deskLoad',{school:sc.id,tab:DESK_TAB});if(closed||dirty||busyS||typing())return;
    const d2=JSON.parse(L2.json||'null');if(!d2||d2.v!==2)return;const per=db.period;into(db,mig28p(d2));db.period=per;deskSettings(db,sc);deskFunds(db,L2);rev=L2.rev;baseJson=L2.json;L.locked=L2.locked||{};deskQs(db).forEach(q=>keys.add(q));
-   if(L2.editors)who(L2.editors);redraw();status('Updated with the latest changes'+(by?' from '+by:''))}catch(e){}};
-  const tick=async()=>{if(closed||document.hidden)return;try{const r=await deskCall('deskPing',{school:sc.id,tab:DESK_TAB});who(r.editors);lastBy=r.by||lastBy;if(r.rev>rev)pull(r.by)}catch(e){if(e&&e.error==='nosession'&&!ro&&dirty)fail(e)}};
+   if(L2.editors)who(L2.editors);noKeep();redraw();status('Updated with the latest changes'+(by?' from '+by:''))}catch(e){}};
+  const tick=async()=>{if(closed||document.hidden)return;try{const r=await deskCall('deskPing',{school:sc.id,tab:DESK_TAB});who(r.editors);lastBy=r.by||lastBy;if(r.rev>rev)pull(r.by);if(typeof r.ph==='number'&&r.ph!==PHL.length)phRefresh()}catch(e){if(e&&e.error==='nosession'&&!ro&&dirty)fail(e)}};
   const pinger=setInterval(tick,40000);
   const finish=then=>{closed=true;clearInterval(pinger);clearTimeout(timer);if(!ro)deskCall('deskPing',{school:sc.id,tab:DESK_TAB,leaving:1}).catch(()=>{});const w=$('#deskwrap');if(w)w.remove();document.querySelectorAll('.modal').forEach(m=>m.remove());document.body.style.overflow='';window.__desk=null;S.D=null;if(then)then();load()};
   /* photos and scans of a check, taken or chosen inside the Desk (version 29); saved in the portal, shown here and printed after the check's forms */
@@ -998,7 +1012,8 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
     const gd=doc.getElementById('goDocs'),fno=doc.getElementById('f-no'),no=fno?String(fno.value||'').trim():'',ck=no&&DB.checks.find(c=>String(c.no||'').trim()===no);
     if(gd&&!doc.getElementById('pPhotos')&&ck&&ck.date&&!ck.cancelled&&!(ck.start&&!ck.dated)){const n=PHL.filter(p=>String(p.checkNo)===no).length,b=doc.createElement('button');b.id='pPhotos';b.textContent='📷 Photos'+(n?' ('+n+')':'');b.title='Take or choose photos of the check, its receipts and the items';
      b.onclick=()=>{const e=doc.getElementById('pPhSec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})};gd.insertAdjacentElement('afterend',b);
-     const sec=gd.closest('.section');if(sec&&!doc.getElementById('pPhSec')){sec.insertAdjacentHTML('afterend',phSec(doc,ck,no));phWire(doc,ck,no)}}
+     const sec=gd.closest('.section');if(sec&&!doc.getElementById('pPhSec')){sec.insertAdjacentHTML('afterend',phSec(doc,ck,no));phWire(doc,ck,no)}
+     const ej=doc.querySelector('.edjump');if(ej&&!doc.getElementById('pPhJ')){const j=doc.createElement('button');j.type='button';j.id='pPhJ';j.className='jmp ph';j.textContent='📷 Photos'+(n?' ('+n+')':'');j.onclick=b.onclick;ej.appendChild(j)}}
     phFillD(doc);
     if(L.testing)notes.push(`<b>Test mode.</b> You are looking at ${esc(sc.name)}’s Desk as another account. Nothing you change here is saved.`);else if(ro)notes.push(`<b>View only.</b> This is ${esc(sc.name)}’s Liquidation Desk. Changes here are not saved.`);
     const pl=/^F:/.test(DB.period)?esc(((DB.funds||{})[DB.period.slice(2)]||{}).title||'This special fund'):qLabel(DB.period);if(L.locked[DB.period])notes.push(L.locked[DB.period]==='turnover'?`<b>${pl} has a turnover.</b> Edit it in the portal instead; changes here are not sent.`:`<b>${pl} is already submitted (${esc(ST[L.locked[DB.period]]||L.locked[DB.period])}).</b> Changes here are not sent to the portal unless it is returned.`);
@@ -1008,7 +1023,9 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
     if(!ro&&dirty&&!(await deskAsk('Your last changes have not reached the portal yet. They are kept on this computer and will be sent the next time you open the Desk here.','Close anyway','Stay in the Desk'))){status('Not saved yet. Your work is kept on this computer.');return}
     finish(then)}finally{closing=false}},
    /* the Photos button in the Desk: back to the portal, on that check's photos */
-   photoList:()=>PHL,fillPhotos:doc=>phFillD(doc,true),
+   photoList:()=>PHL,fillPhotos:doc=>phFillD(doc,true),logo:()=>sc.logo||'',
+   /* the school logo, changed from the Desk's School setup: the same one as under "Our school" */
+   setLogo:async d=>{await deskCall('setOfficeLogo',{school:sc.id,dataUrl:d||''});sc.logo=d||'';if(D0&&D0.school)D0.school.logo=sc.logo},
    photos:(no,period)=>window.__desk.close(()=>{const f=/^F:/.test(period)&&(L.funds||[]).find(x=>'F:'+x.id===period);if(f&&f.period){S.openP=f.period}else if(/^\d{4}-Q[1-4]$/.test(period)){S.q=period;S.openP=''}S.photoCheck=no;S.goPh=true;S.PHk='';S.rcpCheck=null;S.panel=''})};
   const w=document.createElement('div');w.id='deskwrap';w.innerHTML='<iframe title="MOOE Liquidation Desk"></iframe>';document.body.appendChild(w);document.body.style.overflow='hidden';
   w.querySelector('iframe').srcdoc=S.deskHtml;$('#app').innerHTML=back;wire();
