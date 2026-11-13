@@ -180,7 +180,7 @@ const CREDITS=[['FELICIANO C. BUENAFE, JR. CESO V','Schools Division Superintend
 const DEFAULT_SUPPORT='For questions about using the portal, signing in or passwords:\nAntoniño F. Tolentino, Head Teacher I, Camanci Sur Elementary School\n\nFor questions about liquidation rules, account codes or returned submissions:\nyour District Bookkeeper, or the Accounting Unit, Division of Aklan.\n\nFor internet or computer problems at your school:\nyour District ICT Coordinator.';
 function showPage(pg){PAGE=pg;document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('on',b.dataset.page===pg));
  const back=`<button class="btn link" id="pgBack">← ${B?'Back to the portal':'Back to sign in'}</button>`;let h='';
- if(pg==='credits')h=`<div class="doc">${back}<h1>Credits</h1><p class="sub">The Division of Aklan MOOE Liquidation Portal was designed and developed by <b>Antoniño F. Tolentino</b>, Head Teacher I, Camanci Sur Elementary School. <button class="btn link" data-goto-page="about">About the developer →</button></p><h2>With thanks to</h2><ul class="credits">${CREDITS.map(c=>`<li><b>${esc(c[0])}</b><span>${esc(c[1])}</span></li>`).join('')}</ul></div>`;
+ if(pg==='credits')h=`<div class="doc">${back}<h1>Credits</h1><p class="sub">The Division of Aklan MOOE Liquidation Portal was designed and developed by <b>Antoniño F. Tolentino</b>, Head Teacher I, Camanci Sur Elementary School. <button class="btn link" data-goto-page="about">About the developer →</button></p><h2>With thanks to</h2><ul class="credits">${CREDITS.map(c=>`<li><b>${esc(c[0])}</b><span>${esc(c[1])}</span></li>`).join('')}</ul><h2>Free software used</h2><p>Excel files: ExcelJS (MIT License). Reading photos of documents in the Liquidation Desk: PaddleOCR PP-OCRv6 models (Apache License 2.0) and ONNX Runtime Web (MIT License); the photo is read inside your browser and not sent anywhere.</p></div>`;
  if(pg==='support')h=`<div class="doc">${back}<h1>Support</h1><p class="sub">Who to contact when something does not work or you are not sure what to do.</p><div class="card supportbox">${esc(BR.support||DEFAULT_SUPPORT)}</div>
   <h2>Before you ask for help</h2><ul><li>If the portal shows “Sorry, the file could not be opened”, open <b>${SITE}</b> instead.</li><li>Write down what you were doing and the exact message on the screen.</li><li>A screenshot helps a lot.</li><li>Never send your password to anyone. If you forget it, your district can give you a new sign-in code.</li></ul>
   <h2>Support this work</h2><div class="card stack"><p style="margin:0">This portal and its Liquidation Desk were designed and coded independently by <b>Antoniño F. Tolentino</b>. If they have made liquidation easier for you and you would like to see more apps like them, you may send a voluntary donation through GCash.</p>
@@ -888,6 +888,8 @@ function deskSettings(db,sc){const F=B.forms||{},bk=(S.D&&S.D.bk)||{name:'',pos:
  const hs=new Set(String(st.rules.holidays||'').split(/[\s,;]+/).filter(Boolean));String(F.holidays||'').split(/[\s,;]+/).filter(Boolean).forEach(h=>hs.add(h));st.rules.holidays=[...hs].sort().join(', ');return db}
 /* same as the Desk's mig28: checks saved before version 28 keep their forms (the ₱1,000 purchase request rule applies to new checks) */
 function mig28p(d){if(d&&(d.rv||0)<28){(d.checks||[]).forEach(c=>{if(c.pc===undefined)c.pc=false});d.rv=28}return d}
+/* same as the Desk's mig31: checks saved before version 31 keep the payroll and acknowledgment receipt of labor billed on an official receipt */
+function mig31p(d){mig28p(d);if(d&&(d.rv||0)<31){(d.checks||[]).forEach(c=>{if(c.lb===undefined)c.lb=false});d.rv=31}return d}
 function deskFromPortal(L){const ca={};L.subs.forEach(x=>{ca[x.q]={ada:x.ada||'',adaDate:x.adaDate||'',amount:x.ca||0,prevAda:'',prevAdaDate:'',prevAmt:x.prevAmt||0,regNo:'',...(x.rel||{})}});const funds={};(L.funds||[]).forEach(f=>{funds[f.id]=fundFromPortal(f)});
  const checks=L.checks.filter(c=>c.mode!=='Cash'&&c.mode!=='ADA').map(c=>{const R=c.receipts||[],tax=+c.tax||0,ls=(c.lines||[[c.code,c.amount]]).filter(l=>l[0]&&l[0]!=='multi');let items;
   if(c.mode==='Cancelled')items=[];
@@ -934,7 +936,7 @@ window.addEventListener('beforeunload',e=>{try{if(window.__desk&&window.__desk.u
 async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerHTML;$('#app').innerHTML='<div class="loading">Opening the Liquidation Desk…</div>';
  try{/* the Desk page is fetched every time (with the data, at the same moment), so a portal left open never keeps an older Desk */
   const [dp,L,PH0]=await Promise.all([call('deskPage'),call('deskLoad',{school:sc.id,tab:DESK_TAB}),call('photoList',{school:sc.id}).catch(()=>[])]);S.deskHtml=dp.html;let PHL=PH0||[];const phD={},noOf={};
-  const ro=L.readonly,me=B.me.username;let db=null;try{db=L.json?JSON.parse(L.json):null}catch(e){}const fresh=!db||db.v!==2;if(fresh)db=deskFromPortal(L);mig28p(db);
+  const ro=L.readonly,me=B.me.username;let db=null;try{db=L.json?JSON.parse(L.json):null}catch(e){}const fresh=!db||db.v!==2;if(fresh)db=deskFromPortal(L);mig31p(db);
   let rev=L.rev||0,baseJson=fresh?'':L.json,dirty=fresh,timer=null,busyS=false,again=false,wait=3000,closed=false,closing=false,expired=false,editors=L.editors||[],lastBy='';
   /* work kept on this computer that never reached the portal */
   const dr=ro?null:getDraft(sc.id);let recovered='';
@@ -975,7 +977,7 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
   const reconcile=async()=>{if(ro||dirty)return send();try{const r=await deskCall('deskSave',{school:sc.id,rev,qs:payload(),tab:DESK_TAB});if(r.conflict)return pull(r.by);if(r.editors)who(r.editors);report(r)}catch(e){if(e&&e.error==='nosession')fail(e)}};
   /* someone else saved: load their copy while this person is not typing */
   const pull=async by=>{if(closed||dirty||busyS||typing())return;try{const L2=await deskCall('deskLoad',{school:sc.id,tab:DESK_TAB});if(closed||dirty||busyS||typing())return;
-   const d2=JSON.parse(L2.json||'null');if(!d2||d2.v!==2)return;const per=db.period;into(db,mig28p(d2));db.period=per;deskSettings(db,sc);deskFunds(db,L2);rev=L2.rev;baseJson=L2.json;L.locked=L2.locked||{};deskQs(db).forEach(q=>keys.add(q));
+   const d2=JSON.parse(L2.json||'null');if(!d2||d2.v!==2)return;const per=db.period;into(db,mig31p(d2));db.period=per;deskSettings(db,sc);deskFunds(db,L2);rev=L2.rev;baseJson=L2.json;L.locked=L2.locked||{};deskQs(db).forEach(q=>keys.add(q));
    if(L2.editors)who(L2.editors);noKeep();redraw();status('Updated with the latest changes'+(by?' from '+by:''))}catch(e){}};
   const tick=async()=>{if(closed||document.hidden)return;try{const r=await deskCall('deskPing',{school:sc.id,tab:DESK_TAB});who(r.editors);lastBy=r.by||lastBy;if(r.rev>rev)pull(r.by);if(typeof r.ph==='number'&&r.ph!==PHL.length)phRefresh()}catch(e){if(e&&e.error==='nosession'&&!ro&&dirty)fail(e)}};
   const pinger=setInterval(tick,40000);
@@ -1024,6 +1026,8 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
     finish(then)}finally{closing=false}},
    /* the Photos button in the Desk: back to the portal, on that check's photos */
    photoList:()=>PHL,fillPhotos:doc=>phFillD(doc,true),logo:()=>sc.logo||'',
+   /* version 32: a photo read in the Desk ("Read a document") is kept with its check, like one taken under "Photos and scans" */
+   keepPhoto:async(no,stage,label,date,file)=>{if(ro)throw {error:'View only'};if(dirty||busyS)await send(true);const data=await resize(file,stage==='Check'||stage==='Receipt');const r=await deskCall('upload',{school:sc.id,checkNo:no,label,stage,date,dataUrl:data});S.imgs[r.id]=data;PHL=await deskCall('photoList',{school:sc.id});redraw();return r},
    /* the school logo, changed from the Desk's School setup: the same one as under "Our school" */
    setLogo:async d=>{await deskCall('setOfficeLogo',{school:sc.id,dataUrl:d||''});sc.logo=d||'';if(D0&&D0.school)D0.school.logo=sc.logo},
    photos:(no,period)=>window.__desk.close(()=>{const f=/^F:/.test(period)&&(L.funds||[]).find(x=>'F:'+x.id===period);if(f&&f.period){S.openP=f.period}else if(/^\d{4}-Q[1-4]$/.test(period)){S.q=period;S.openP=''}S.photoCheck=no;S.goPh=true;S.PHk='';S.rcpCheck=null;S.panel=''})};
