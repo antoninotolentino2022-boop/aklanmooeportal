@@ -178,6 +178,489 @@ async function busy(btn,fn){if(btn){btn.disabled=true}try{await fn()}catch(e){sh
 function loadBrand(){google.script.run.withSuccessHandler(r=>{BR=r||BR;const l=$('#logo');if(BR.logo){l.src=BR.logo;l.hidden=false}else l.hidden=true;const h=$('#heroLogo');if(h){if(BR.logo){h.src=BR.logo;h.hidden=false}else h.hidden=true}if(PAGE)showPage(PAGE)}).withFailureHandler(()=>{}).brand()}
 const CREDITS=[['FELICIANO C. BUENAFE, JR. CESO V','Schools Division Superintendent'],['LUZ U. BANZON, CESO VI','OIC-Office of the Assistant Division Superintendent'],['MARISSA A. JIZMUNDO','Accountant III'],['ACCOUNTING UNIT','Division of Aklan'],['FLORADEL P. JAMERO','ITO I'],['DISTRICT ICT COORDINATORS','Division of Aklan'],['JOYCE M. TORIAGA, PhD','Public Schools District Supervisor, District of Numancia'],['SCHOOL HEADS and FINANCE STAFF','District of Numancia']];
 const DEFAULT_SUPPORT='For questions about using the portal, signing in or passwords:\nAntoniño F. Tolentino, Head Teacher I, Camanci Sur Elementary School\n\nFor questions about liquidation rules, account codes or returned submissions:\nyour District Bookkeeper, or the Accounting Unit, Division of Aklan.\n\nFor internet or computer problems at your school:\nyour District ICT Coordinator.';
+/* HELP-BEGIN: copied from offline-tool/help.js by build_all.py. Edit help.js, not this copy. */
+/* ================= Help (version 36) =================
+   One source for the portal's Help page and the Desk's Help page.
+   offline-tool/build.py and portal/build_desk.py include this file as is; build_all.py copies it into
+   portal/Index.html between the HELP-BEGIN and HELP-END lines (do not edit that copy by hand).
+   helpView(root,{site,who,q,go}) draws the searchable help into root. Topics: c = section, w = who it is for,
+   t = title (a question for the FAQ), k = extra words people may search with (English, Filipino, Akeanon), b = the answer. */
+const HELP_CATS=[['start','Getting started'],['school','Schools: the quarter, step by step'],['desk','The Liquidation Desk'],['kinds','Kinds of expense and their papers'],['reports','Monthly reports and printing'],['district','For districts'],['division','For the Division, units and the administrator'],['faq','Questions people ask'],['trouble','When something goes wrong'],['rules','Rules, account codes and words to know']];
+const HELP_WHO=[['all','Everyone'],['school','Schools'],['district','Districts'],['division','Division'],['unit','Division units'],['admin','Administrator']];
+const HELP_POPULAR=['quick','f-pr-higher','desk-bills','desk-codes','signin','k-travel','k-repair-bldg','t-notsaved'];
+function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'<a href="#" data-hgo="'+id+'">'+t+'</a>';return [
+/* ---------- Getting started ---------- */
+{id:'quick',c:'start',w:'school',t:'Your first quarter, step by step',k:'start begin new first time quick guide steps overview paano magsimula umpisa',b:`
+<p>The whole quarter, from the cash advance to the Division. Each step has its own topic below.</p>
+<ol><li><b>Sign in</b> with your username (School ID and post, for example <b>114245-SH</b>). The first time, use the sign-in code from your district. ${go('signin','How to sign in the first time')}</li>
+<li><b>Choose the quarter</b> at the top and type the cash advance: ADA number, date and amount. ${go('ca','Enter the cash advance')}</li>
+<li><b>Open 📒 Liquidation Desk.</b> Tap <b>New check</b> for each check: number, date, payee, nature of expense, the items or bills, and the OR or invoice. ${go('desk-newcheck','Enter a check')}</li>
+<li><b>Read the reminders</b> in the yellow box of each check and fix what you can. ${go('t-reminders','What the reminders mean')}</li>
+<li><b>Add photos</b> of the check, the receipts and the items with <b>📷 Photos</b>. ${go('photos','Photos')}</li>
+<li><b>Print the forms.</b> In the Desk, <b>Open the forms</b> prints every form of a check; <b>Liquidation &amp; cash advance</b> prints the quarterly forms. Sign them. ${go('desk-forms','Forms of a check')}</li>
+<li><b>Submit</b> in the portal when the balance is zero, and bring the signed copies to your district. ${go('submit','Submit the quarter')}</li>
+<li><b>Every month</b>, by the 10th, send the monthly reports (bank reconciliation and the others). ${go('monthly','Monthly reports')}</li></ol>
+<p class="hp-tip">Encode once. The Desk fills in the PR, canvass, abstract, PO, IAR, register, Liquidation Report, Summary of Expenses and the rest from what you type.</p>`},
+{id:'open',c:'start',w:'all',t:'Opening the portal',k:'link address website url tinyurl browser phone computer chrome open bukas',b:`
+<ul><li>Open <b>${S}</b> on a phone or computer. It works in any browser, even one signed in to several Google accounts.</li>
+<li>The older address, tinyurl.com/aklanmooeportal, still works, but it can show “Sorry, the file could not be opened” when the browser is signed in to more than one Google account. If that happens, use ${S}.</li>
+<li>For printing, use a computer with Google Chrome.</li>
+<li>Bookmark the address, or add it to your phone’s home screen.</li></ul>`},
+{id:'username',c:'start',w:'all',t:'Your username',k:'user name account login school id sh ao psds bk div acctg unit',b:`
+<ul><li>Schools: your <b>School ID</b> plus your post: <b>-SH</b> for the School Head and <b>-AO</b> for the AO or bookkeeper. Example: <b>114245-SH</b>.</li>
+<li>Districts: <b>NUMANCIA-PSDS</b> (District Supervisor) and <b>NUMANCIA-BK</b> (District Bookkeeper), with your district’s name.</li>
+<li>Division units: <b>U-</b> and the unit, for example <b>U-ICT</b>. Division Accounting: <b>DIV-ACCTG</b>.</li>
+<li>The username belongs to the post, not the person. When you transfer or retire, the next holder uses the same username with their own password.</li></ul>`},
+{id:'signin',c:'start',w:'all',t:'First sign-in, or a forgotten password',k:'password forgot sign in code login cannot enter new holder reset nalimutan password code',b:`
+<ol><li>Ask your <b>District Supervisor or District Bookkeeper</b> for a sign-in code. District and Division staff ask the Division.</li>
+<li>On the sign-in page, tap <b>First time or forgot password? Use a sign-in code</b>.</li>
+<li>Type your username and the code (for example <b>K7QM-4TXP</b>).</li>
+<li>If you are new in the post, choose <b>I am the new holder</b> and type your name and position.</li>
+<li>Choose your own password. Tick <b>Show password</b> to see what you typed.</li></ol>
+<p>A code works once and lasts 7 days. After ten wrong tries the sign-in waits 5 minutes; a new sign-in code ends the wait at once. Your account and your work are not affected.</p>`},
+{id:'roles',c:'start',w:'all',t:'Who does what in the portal',k:'roles school head ao bookkeeper district supervisor psds division accounting unit administrator responsibilities',b:`
+<ul><li><b>School Head and AO</b> (two accounts): enter the cash advance and the checks, print and sign the forms, submit the quarter, send the monthly reports. Either of you can submit when the other is away.</li>
+<li><b>District Supervisor and District Bookkeeper</b>: give sign-in codes, check each submission and its hard copy, forward it to the Division or return it with a remark, and watch their schools’ progress.</li>
+<li><b>Division Accounting</b>: verifies, records the JEV number, or returns with a remark; sets the rules for all schools; marks monthly reports received.</li>
+<li><b>Division units</b> (Training and Development, ICT Unit and others): liquidate their own cash advances, sent straight to Division Accounting.</li>
+<li><b>Administrator</b>: accounts, the school list and the pilot settings.</li></ul>`},
+{id:'ourschool',c:'start',w:'school',t:'Your logo, heading and footer',k:'logo seal heading letterhead footer address contact our school our office',b:`
+<ul><li>Click <b>Our school</b> (or <b>Our office</b>) at the top of your page to upload your logo and set your address, contact numbers and footer.</li>
+<li>In the Desk, the same logo is under <b>School setup &amp; rules → School logo</b>. It is printed at the top left of every form that has the school heading. The DepEd seal (optional) goes on the Program of Works.</li>
+<li>The official heading lines (Republic of the Philippines, Department of Education, Region and Division) are set by the Division and are the same for everyone.</li></ul>`},
+{id:'safety',c:'start',w:'all',t:'Keeping your account and your school’s data safe',k:'security privacy password share sign out shared computer internet cafe safe',b:`
+<ul><li>Never send your password to anyone, not even to your district or the developer. Nobody needs it to help you.</li>
+<li>On a shared or internet-café computer, sign out when you finish.</li>
+<li>Your district sees your school’s liquidations; the Division sees every school. Other schools cannot see yours.</li>
+<li>Photos read with <b>Read a document</b> are read inside your own browser and are not sent anywhere for reading.</li></ul>`},
+/* ---------- Schools ---------- */
+{id:'ca',c:'school',w:['school','unit'],t:'Enter the cash advance (ADA)',k:'cash advance ada lddap amount release quarter received pondo',b:`
+<ol><li>Choose the quarter at the top of your page.</li>
+<li>Type the <b>ADA number</b>, the <b>date</b> the cash advance reached the bank, and the <b>amount</b>.</li>
+<li>In the Desk, the same numbers are on <b>Liquidation &amp; cash advance</b>. When the cash advance is released, also type the ORS, DV and JEV numbers once (${go('request','Request for cash advance')}).</li></ol>
+<p>The liquidation follows the amount released. The balance shown is the cash advance less the checks.</p>`},
+{id:'checks-portal',c:'school',w:'school',t:'Add the checks of the quarter',k:'check tseke cheke add encode payee amount OR invoice quick form',b:`
+<ul><li>The easiest way: open <b>📒 Liquidation Desk</b> and enter each check there. Everything you type is sent to the portal, and every form is made from it.</li>
+<li>A school that does not use the Desk can add a check right in the portal with its <b>OR / invoice number</b> and date.</li>
+<li>Look at the <b>Check numbers and receipts</b> box on your page and fix what it lists. ${go('checkbook','Check numbers and receipts')}</li></ul>`},
+{id:'checkbook',c:'school',w:'school',t:'Check numbers and receipts box',k:'checkbook series check number duplicate used twice spoiled cancelled receipt OR same supplier warning red yellow',b:`
+<ul><li><b>Register your checkbook</b> (first and last check number, date received). The portal then flags a check number outside the series, and the RAAF can be filled.</li>
+<li><b>A check number can be used only once</b>, in any quarter.</li>
+<li><b>Spoiled or cancelled check?</b> Add it as cancelled (in the Desk: tick <b>Cancelled check</b>), so there is no gap in the numbers.</li>
+<li><b>Every payment needs its OR or sales invoice.</b> The receipts should add up to the check amount plus any tax withheld.</li>
+<li>The portal also warns about the same OR from the same supplier used twice, receipts dated far from the check, and checks dated outside the quarter or before the cash advance arrived.</li>
+<li><b>Red</b> items must be fixed before you can submit. For <b>yellow</b> items, look at each one, then tick the box to submit.</li></ul>`},
+{id:'photos',c:'school',w:['school','unit'],t:'Photos of the check, receipts and items',k:'photo picture litrato kuha camera scan upload documentation before during after delivered caption',b:`
+<ol><li>In the Desk, open the check and tap <b>📷 Photos</b> (beside <b>Open the forms</b>). In the portal, click <b>Photos</b> beside the check.</li>
+<li><b>Take a photo</b> (on a phone it opens the camera) or <b>Choose photos or scans</b>. Pick what it is: the check, a receipt, before, during, after, items delivered.</li>
+<li>The caption is suggested from the check (the items and the supplier, or the purpose). Click another suggestion or type your own.</li></ol>
+<p>Photos are printed after the check’s forms: the check and receipts two to a page, the others four to a page, certified by the School Head. If you correct a check number later, the portal points out the photos left under the old number so you can move them.</p>`},
+{id:'submit',c:'school',w:['school','unit'],t:'Submit the quarter',k:'submit send pasa forward district lock balance zero',b:`
+<ol><li>Make sure the balance is zero (or the rest is accounted for) and the red items in <b>Check numbers and receipts</b> are fixed.</li>
+<li>Click <b>Submit</b>. The quarter is locked; the Desk shows it as view only.</li>
+<li>Bring the signed hard copies to your district. Print 3 copies for signature: school, district or Division, and COA.</li></ol>`},
+{id:'returned',c:'school',w:['school','unit'],t:'When your liquidation is returned',k:'returned balik remark red fix resubmit correction ibinalik',b:`
+<ol><li>A number on the quarter tells you something needs you. Open it and read the <b>remarks in red</b>.</li>
+<li>Fix the problem (in the Desk or in the portal). The Desk can change the quarter again once it is returned.</li>
+<li>Tick the box that you fixed it, and <b>resubmit</b>.</li></ol>`},
+{id:'funds',c:'school',w:'school',t:'Special funds (SIIF, SNED, SBFP, Additional MOOE and others)',k:'special fund siif sned sbfp feeding gulayan additional mooe program fund separate',b:`
+<ul><li>Each fund released to the school is liquidated on its own: its own checks, register, Liquidation Report, deadline and approval steps.</li>
+<li>On the school page: <b>Special funds → Record a special fund release</b>. In the Desk: choose <b>+ Record a special fund release…</b> in the quarter list.</li>
+<li>Checks entered while a fund is chosen are charged to it; <b>Charged to</b> on a check moves it.</li>
+<li>They share the school’s LBP account and checkbook, so the Check Disbursement Record, the bank reconciliation and the RAAF cover them all.</li></ul>`},
+{id:'request',c:'school',w:'school',t:'Request for cash advance and the approved papers',k:'request letter ors dv jev aip programmed expenditures approved papers lddap scan release',b:`
+<ol><li>In the Desk, open <b>Liquidation &amp; cash advance</b> and switch to <b>Request for cash advance</b>.</li>
+<li>List the programmed expenditures from the approved AIP. <b>Start from the usual MOOE list</b>, or copy last quarter’s list and change the amounts.</li>
+<li>Print the request letter (certified by the PSDS, approved by the SDS), the ORS, the DV and the JEV in the Division’s formats. A request with repairs also prints the ${go('k-pow','Program of Works')}.</li>
+<li>When the cash advance is released, type the ADA number and date and the ORS, DV and JEV numbers once.</li>
+<li>Upload the scans of the approved papers and the LDDAP-ADA printout on the liquidation page (<b>Approved cash advance papers</b>). They are filed after the Teachers’ Association certification, before each check’s papers.</li></ol>`},
+{id:'transfer',c:'school',w:['school','district'],t:'Transfers, retirement and new designations',k:'transfer retire leave new school head turnover clearance last day designation lipat',b:`
+<ul><li>Open <b>Our school</b> or <b>Our office</b> and use <b>Leaving this post?</b> to record your last day.</li>
+<li>For the School Head, a liquidation still open on that day is split (<b>turnover</b>): payments up to that day stay under your name, and the remaining cash moves to a new liquidation for the next holder.</li>
+<li>Submitted liquidations stay under your name until they are verified. <b>Liquidations under your name</b> shows what is still open, for your clearance.</li>
+<li>Your district gives the next holder a sign-in code for the same username. At your new school, ask that district for the code of your new post.</li></ul>`},
+{id:'deltest',c:'school',w:'school',t:'Trying it out, and removing test entries',k:'test practice trial delete remove sample example demo',b:`
+<ul><li>Enter test checks freely. To remove them, open the quarter and use <b>Delete this quarter’s entries</b> (only before it is submitted). It also clears that quarter in the Liquidation Desk.</li>
+<li>In the offline tool, <b>Load example</b> shows a finished quarter; <b>Start fresh</b> in School setup clears it.</li></ul>`},
+{id:'lookback',c:'school',w:'all',t:'Year summary and searching earlier quarters',k:'year summary search find payee check or number amount jev earlier quarters history',b:`
+<ul><li><b>Year summary</b> shows every liquidation of the year with the amounts and JEV numbers, and totals per account code.</li>
+<li><b>Search all quarters</b> finds a payee, check or OR number, particulars, or an amount in any quarter.</li>
+<li>Older quarters are under <b>Earlier quarters</b> at the top.</li></ul>`},
+{id:'monitoring',c:'school',w:'all',t:'Monitoring: spending progress',k:'monitoring graph chart progress spending percent dashboard utilization',b:`
+<ul><li><b>Schools and offices:</b> tap <b>📊 Monitoring</b> at the top of your page: the cash advances of the year, how much is paid and liquidated, what the Division has verified, spending per month and per account code, and this quarter’s progress.</li>
+<li><b>Districts:</b> the <b>Monitoring</b> tab shows every school with a progress bar and its status. Sort by <b>Lowest % first</b> to see who needs help.</li>
+<li><b>Division:</b> the <b>Monitoring</b> tab compares the districts and the division units. Click a district to see its schools.</li>
+<li>On each bar, the dark line marks how much of the quarter has passed. A bar far behind the line means slow spending. Point at a bar to see the exact amounts.</li></ul>`},
+{id:'deadlines',c:'school',w:'all',t:'Deadlines',k:'deadline due date late overdue december 15 march 31 june 30 september 30 kailan',b:`
+<ul><li>Each quarter’s liquidation is due to the Division Accounting Unit on the date set by the Division (for 2026: March 31, June 30, September 30 and December 15). Your district may set an earlier date.</li>
+<li>The school’s page shows how many days are left; the district and Division lists mark late ones as <b>Overdue</b>.</li>
+<li>Monthly reports are due by the 10th of the next month (${go('monthly','Monthly reports')}).</li>
+<li>4th quarter: fixed expenses as of December 31 (internet, landline) must be paid; electricity and janitorial up to December 10 go in the 4th quarter, later ones in the 1st quarter of the next year.</li></ul>`},
+/* ---------- The Liquidation Desk ---------- */
+{id:'desk-open',c:'desk',w:'school',t:'What the Liquidation Desk is, and how to open it',k:'desk open liquidation desk pages menu autosave saved version offline tool',b:`
+<ul><li>Open your quarter in the portal and tap <b>📒 Liquidation Desk</b>. It is the same MOOE Liquidation Desk as the offline tool, inside the portal.</li>
+<li>Its pages: <b>Checks issued</b> (enter checks), <b>Forms per check</b>, <b>Liquidation &amp; cash advance</b> (quarterly forms and the request), <b>Monthly reports</b>, <b>School setup &amp; rules</b>, and this <b>Help</b>.</li>
+<li>Everything is <b>saved to the portal automatically</b>. Look for <b>All changes saved</b> under the <b>Back to the portal</b> button.</li>
+<li>Your school name, School Head, district bookkeeper and Division signatories come from the portal and cannot be changed in the Desk.</li>
+<li>The Desk shows its version next to the school’s name (for example <b>Desk v36</b>).</li></ul>`},
+{id:'desk-newcheck',c:'desk',w:'school',t:'Enter a check',k:'new check encode add payee nature of expense purpose items unit qty quantity unit cost total tax withheld check amount invoice OR number date',b:`
+<ol><li>On <b>Checks issued</b>, tap <b>New check</b>.</li>
+<li>Type the <b>check number</b> and <b>check date</b>, the <b>payee</b>, and choose the <b>nature of expense</b> (office supplies, electricity, travel, repairs and so on). The nature decides which forms the check needs.</li>
+<li>Type the <b>purpose</b>, the payee’s address and TIN, and the <b>OR / invoice number</b> and date.</li>
+<li>Under <b>Items or services</b>, type each line: description, unit, quantity, unit cost. The account code comes from the nature; change it per line when needed.</li>
+<li>If tax was withheld, type it under <b>Less tax withheld / adjustment</b>. The <b>Check amount</b> must match the check.</li></ol>
+<p>The bar at the top of an open check jumps to <b>Items</b>, <b>Dates</b>, <b>Forms &amp; print</b> and <b>Photos</b>. Type less: ${go('desk-pr-excel','bring in a PR from Excel')} or ${go('desk-read','read a photo of the document')}.</p>`},
+{id:'desk-codes',c:'desk',w:'school',t:'One check, several account codes',k:'several account codes multiple codes one check two kinds supplies and repair split code per line recapitulation',b:`
+<ul><li>When one check pays for more than one kind of expense (for example other supplies and the repair of a printer from one shop), choose the <b>Account code</b> of each line.</li>
+<li>The amounts go to their own codes on every form (register, Liquidation Report, Summary of Expenses), and the forms of the other kind are added (for a repair: pre-repair, job order, post-repair).</li>
+<li>Repairs of buildings, of furniture and fixtures, and other supplies can be on one check: the Desk keeps them apart, and the Purchase Request is grouped by account code (A, B, C) as taught in the Division training.</li></ul>`},
+{id:'desk-bills',c:'desk',w:'school',t:'Several bills or receipts on one check',k:'bills utilities electricity water internet telephone months billing period several receipts OR per month kuryente tubig',b:`
+<ul><li>For electricity, water, internet, telephone, mobile and security, the check has a <b>Bills paid by this check</b> table: one row per bill with its billing month, OR number, OR date and amount.</li>
+<li><b>Add a bill</b> fills in the next month for you.</li>
+<li>For other expenses, give a line its own <b>OR / ref no.</b> and date.</li>
+<li>Each receipt is listed on its own in the Summary of Expenses, the register and the portal.</li></ul>`},
+{id:'desk-noor',c:'desk',w:'school',t:'No official receipt: Acknowledgment Receipt',k:'no OR acknowledgment receipt AR laborer driver hauling walang resibo',b:`
+<ul><li>When the payee has no official receipt (a laborer or a driver, for example), choose <b>Proof of payment → No OR: Acknowledgment Receipt</b> on the check.</li>
+<li>The Desk adds the Acknowledgment Receipt to the forms, numbers it (AR No. year-month-series) and uses that number in place of the OR everywhere.</li>
+<li>Labor and hauling checks start this way.</li></ul>`},
+{id:'desk-pr-excel',c:'desk',w:'school',t:'Bring in a Purchase Request from Excel (no typing item by item)',k:'purchase request pr excel import paste rows blank pr form xlsx items list',b:`
+<ul><li>On <b>Checks issued</b>, tap <b>Bring in a PR from Excel</b> and choose the file. The Desk reads every sheet with the PR’s items table (Unit, Item Description, Quantity, Unit Cost), shows the items and total to check, then adds each PR as a purchase.</li>
+<li><b>Blank PR form (Excel)</b> gives the official layout to fill in.</li>
+<li>On a check, copy item rows in Excel and use <b>Paste rows from Excel</b>.</li></ul>`},
+{id:'desk-read',c:'desk',w:'school',t:'Read a document from a photo',k:'read a document photo scan camera ocr reader receipt check canvass summary of expenses picture basahin',b:`
+<ul><li><b>📷 Read a document</b> (camera) or <b>🖼 Read a saved photo or scan</b>: a check, a receipt, a purchase request or list, a canvass, or a Summary of Expenses. Start from whichever paper you have first.</li>
+<li>The Desk shows what it read. Check every number before you use it; fix what it misread.</li>
+<li>On an open check, <b>Read a document into this purchase</b> fills the check you are on.</li>
+<li>The photo is read inside your browser. The first time, the reader downloads about 42 MB (once); later it starts faster. The photo is kept with its check.</li></ul>`},
+{id:'desk-start',c:'desk',w:'school',t:'A form made before the check (Start with a form)',k:'start with a form pr po job order authority to travel before check not yet paid early prepared months',b:`
+<ol><li>When a Purchase Request, Purchase Order, Job Order, Authority to Travel or other form is prepared before the check, tap <b>Start with a form</b>.</li>
+<li>Choose the nature of expense, the form and its date, then print it. The forms before it count back from it; the forms after it follow it.</li>
+<li>Such a purchase is <b>not yet paid</b>: it is left out of the quarter and the portal until you type the check number and check date. In later quarters it is listed under <b>Started earlier, not yet paid</b>.</li></ol>`},
+{id:'desk-soe',c:'desk',w:'school',t:'Bring in a Summary of Expenses',k:'summary of expenses soe import excel csv update undo overall',b:`
+<ul><li><b>Bring in a Summary of Expenses</b> (Excel or CSV) on <b>Checks issued</b> makes or updates checks from it.</li>
+<li>On a check, <b>Update from a Summary of Expenses</b> takes only that check’s lines. You see what will change, and you can undo.</li></ul>`},
+{id:'desk-canvass',c:'desk',w:'school',t:'Canvass, Abstract of Quotation and Purchase Order',k:'canvass rfq quotation abstract aoq bac purchase order po supplier lowest price winning three suppliers 1000',b:`
+<ul><li>From ₱1,000 (the Division’s rule; see School setup &amp; rules), a purchase needs a PR, a canvass of at least 3 suppliers, the Abstract of Quotation and the PO. The Desk adds them when the check or one receipt reaches the amount.</li>
+<li>Type the suppliers and their prices under <b>Canvass (at least 3 suppliers)</b>. The lowest wins and becomes the supplier of the PO.</li>
+<li><b>PR and Program of Works prices are estimates.</b> They are usually higher than what is bought; the canvass decides the actual price on the PO. ${go('f-pr-higher','Why the PR can be higher')}</li>
+<li>The BAC chairman and members come from School setup; the abstract and minutes print their names and positions.</li>
+<li>On the canvass, the supplier writes the unit and total prices by hand, with a printed name, signature and contact number.</li></ul>`},
+{id:'desk-forms',c:'desk',w:'school',t:'The forms of a check: open, choose and print',k:'forms print open the forms checklist optional forms authority to travel locator slip disbursement voucher paper size long bond a4',b:`
+<ul><li>On an open check, <b>Forms this check needs</b> lists them (checklist, PR, canvass, abstract, PO, IAR, Summary of Expenses and so on). <b>Open the forms</b> shows them ready to print.</li>
+<li><b>Optional forms for this check</b>: tick the Authority to Travel, Locator Slip or Disbursement Voucher when you need them.</li>
+<li><b>Forms per check</b> lets you tick only some forms and choose the paper (long bond, A4 or short bond).</li>
+<li>Print with Chrome on a computer; the printer must use the same paper. Long lists continue on another page with “Page 1 of 2”.</li></ul>`},
+{id:'desk-dates',c:'desk',w:'school',t:'Form dates and the date reminders',k:'dates form dates weekend sunday saturday holiday order sequence chronological pr canvass abstract po iar before check date petsa',b:`
+<ul><li>The Desk dates the forms in the right order: the canvass, abstract and PO follow the PR by one working day each, skipping weekends and holidays, and the IAR comes on or before the check date.</li>
+<li>Change any date under <b>Dates</b> (Form dates). The other forms follow.</li>
+<li>A date on a Saturday, Sunday or holiday is only a reminder: keep the reason ready for the district, Division or COA, or change the date.</li>
+<li>For repairs, the pre-repair inspection comes before the PR and before the Program of Works approval.</li></ul>`},
+{id:'desk-excel',c:'desk',w:'school',t:'Fix a form in Excel and bring the fixes back',k:'excel download edit data sheet bring back fixes apply corrections xlsx formulas',b:`
+<ol><li>On a check, tap <b>Download Excel</b>. Fix the yellow <b>Data</b> sheet (names, dates, amounts, items); every form in the file follows.</li>
+<li>Tap <b>Bring back fixes from Excel</b> and choose the file. The Desk lists what changed; <b>Apply</b> puts the same corrections in the Desk and the portal, so nothing is typed twice.</li></ol>
+<p>Signatory names go to School setup, so every form uses them. Worked-out cells (totals, amounts in words) cannot come back: change what they come from.</p>`},
+{id:'desk-quarter',c:'desk',w:'school',t:'Quarterly forms: register, Liquidation Report and the rest',k:'quarterly liquidation report lr cash disbursements register cdreg check disbursement record cdrec raaf summary of expenses cover page teachers association certification package',b:`
+<ul><li>Open <b>Liquidation &amp; cash advance</b>. Tick the forms: cover page, Cash Disbursements Register, Liquidation Report, Check Disbursement Record, RAAF, Overall Summary of Expenses, the Teachers’ Association certification and the minutes of meeting.</li>
+<li>Tick <b>Every check’s forms</b> to print the whole folder at once, in order.</li>
+<li>The Liquidation Report’s recapitulation is sorted by account code.</li></ul>
+<p>Filing order: ${go('order','Order of the liquidation folder')}.</p>`},
+{id:'desk-minutes',c:'desk',w:'school',t:'Minutes of meeting and attendance',k:'minutes meeting attendance teachers sign noted',b:`
+<ul><li>On <b>Liquidation &amp; cash advance</b>, fill <b>Minutes of meeting</b>: date, time, who chaired, attendance.</li>
+<li>The checks, totals by account code and the balance are filled in for you. The teachers in School setup sign; the School Head notes.</li></ul>`},
+{id:'desk-setup',c:'desk',w:'school',t:'School setup & rules: names that go on every form',k:'school setup signatories names bac chairman members custodian requester inspection officer facilities coordinator pta president teachers rules settings',b:`
+<ul><li>Type the names and positions once: disbursing officer, property custodian, inspection officer, physical facilities coordinator, usual requester, BAC chairman and members, PTA president, Teachers’ Association officers, and the teachers.</li>
+<li>Every form uses them. A change applies to every form you print after it.</li>
+<li><b>Rules</b> shows the amounts the Desk follows (canvass, wage cap and others). In the portal they come from the Division.</li>
+<li>The IAR inspection officer and property custodian should not be BAC signatories.</li></ul>`},
+{id:'desk-two',c:'desk',w:'school',t:'Two people in the Desk at the same time',k:'two people same time school head ao both editing merge conflict',b:`
+<ul><li>The School Head and the AO can both work in the Desk. It shows who else is in it.</li>
+<li>When you both save, the changes are combined check by check. If you both changed the same check, the last one saved is kept and the Desk tells you which check.</li></ul>`},
+{id:'desk-offline',c:'desk',w:'school',t:'No internet: the offline tool and backups',k:'offline no internet backup restore download json file walang internet signal',b:`
+<ul><li>If the internet drops while you work, the Desk says <b>Not saved yet</b> and keeps your work on this computer. It keeps trying, and the next time you open the Desk here it sends what was missing.</li>
+<li>For a longer time without internet: in the Desk tap <b>Download backup</b>, work in the offline MOOE Liquidation Desk file, then open the Desk here again and tap <b>Restore from backup</b>.</li>
+<li>In the offline tool, your data stays in that browser. Download a backup now and then.</li></ul>`},
+{id:'desk-phone',c:'desk',w:'school',t:'Using the Desk on a phone',k:'phone mobile cellphone small screen android',b:`
+<ul><li>Each item of a check is shown as a small card, so every box fits. The menu slides sideways.</li>
+<li>Use the phone for encoding and photos; print from a computer.</li></ul>`},
+{id:'desk-locked',c:'desk',w:['school','district'],t:'Why the Desk says view only or already submitted',k:'view only locked submitted cannot change read only test mode',b:`
+<ul><li>A quarter that is already submitted cannot be changed from the Desk unless it is returned.</li>
+<li>Districts and the Division open a school’s Desk as <b>view only</b>: nothing they change is saved.</li></ul>`},
+/* ---------- Kinds of expense ---------- */
+{id:'k-supplies',c:'kinds',w:'school',t:'Office supplies and other supplies',k:'supplies office supplies other supplies bond paper ink cleaning sports distribution list ics pictures teachers gamit 5020301000 5020399000',b:`
+<ul><li><b>₱1,000 and above:</b> PR, canvass of 3 suppliers, abstract, PO, IAR, sales invoice, pictures of the items with the teachers, Distribution List signed by the teachers, and ICS/PAR stamped by the Division Supply Unit for non-consumables.</li>
+<li><b>Below ₱1,000:</b> the invoice stamped received by the property custodian, the statement of purpose and a picture.</li>
+<li>Quantities on the PO, the invoice, the pictures and the Distribution List must be the same.</li></ul>`},
+{id:'k-semi',c:'kinds',w:'school',t:'Semi-expendable equipment and furniture',k:'semi-expendable equipment furniture printer tv cabinet table chair ict below 50000 ics par warranty',b:`
+<ul><li>Each item must be below ₱50,000; ₱50,000 or more is capital outlay and the Desk warns you.</li>
+<li>Attach the procurement set, the invoice, pictures with the teachers, the Distribution List, ICS/PAR stamped by the Division Supply Unit and the warranty. ICT equipment also needs the approved request letter.</li></ul>`},
+{id:'k-utilities',c:'kinds',w:'school',t:'Electricity, water, internet and telephone',k:'electricity water internet landline telephone utilities bill penalty disconnection akelco kuryente tubig certification no collection',b:`
+<ul><li>Enter each bill in the <b>Bills paid by this check</b> table (${go('desk-bills','how')}).</li>
+<li>Attach the original billing statement (photocopy thermal paper), the service invoice or OR, and the certification that no fees were collected from pupils.</li>
+<li>Penalties and disconnection fees are not allowed on MOOE. Bills above ₱500 are paid by check directly to the provider.</li></ul>`},
+{id:'k-mobile',c:'kinds',w:'school',t:'Communication allowance (mobile)',k:'mobile load communication allowance cellphone prepaid postpaid',b:`
+<ul><li>The Desk follows the monthly cap in the Rules.</li>
+<li>Attach the invoice with the cellphone number, the received list of official mobile numbers, the DTR, and the certification of days rendered (PSDS for the School Head; School Head for other personnel).</li></ul>`},
+{id:'k-travel',c:'kinds',w:'school',t:'Travel (local)',k:'travel byahe biyahe pasahe fare training seminar authority to travel locator slip itinerary certificate of travel completed cenrr appearance ticket 5020101000',b:`
+<ul><li>Choose <b>Travelling – local</b>. Type the destination, the first and last day of travel, and the traveler’s <b>position</b> (needed on the Authority to Travel, Locator Slip and Itinerary), salary, home address and the host of the activity.</li>
+<li>The Desk prints the Itinerary of Travel, Certificate of Travel Completed and CENRR; tick the Authority to Travel or Locator Slip under optional forms. Tick <b>Outside Aklan</b> when the SDS approves.</li>
+<li>Fares without a ticket or receipt are allowed on the CENRR only up to ₱300; attach tickets for the rest.</li>
+<li>The Authority to Travel is approved before the trip (at least 5 working days before). Attach the certificate of appearance and the memorandum.</li></ul>`},
+{id:'k-repair-bldg',c:'kinds',w:'school',t:'Repairs of the building, with labor',k:'repair building classroom materials labor workers program of works pow 40 percent job order timebook payroll acknowledgment accomplishment wmr excess materials pre repair post repair ayos kumpuni 5021304000',b:`
+<ul><li>Materials: <b>Repairs – building materials</b>; workers: <b>Repairs – labor</b>. Both use 5021304000.</li>
+<li>You need an approved <b>Program of Works</b> (${go('k-pow','make it in the Desk')}). Labor is 40% of the actual materials.</li>
+<li>Labor papers: Job Order (whole-peso rate per day), Timebook and Payroll, Acknowledgment Receipt, Accomplishment Report, Waste Materials Report, Inventory of Excess Materials, pre- and post-repair inspection, pictures before, during and after.</li>
+<li>The pre-repair inspection is dated before the PR and before the POW approval; the post-repair after the last day of the job order.</li></ul>`},
+{id:'k-repair-equip',c:'kinds',w:'school',t:'Repairs of furniture and equipment',k:'repair printer projector tv computer furniture chair table equipment job order pre repair post repair ics wmr po iar sira',b:`
+<ul><li>Choose <b>Repairs – machinery &amp; equipment</b> or <b>Repairs – furniture &amp; fixtures</b>.</li>
+<li><b>₱1,000 and above:</b> PR, canvass, abstract, pre-repair inspection, PO, IAR, invoice, the previous ICS/PAR stamped by the Division Supply Unit, the Waste Materials Report if parts were replaced, and the post-repair inspection.</li>
+<li>For equipment, the Job Order for Equipment is requested by the property custodian and approved by the School Head.</li></ul>`},
+{id:'k-pow',c:'kinds',w:'school',t:'Program of Works (POW) in the Desk',k:'program of works pow bill of quantities division engineer labor 40 materials control number approval date paste excel',b:`
+<ol><li>Open <b>Liquidation &amp; cash advance → Request for cash advance</b> and find <b>Program of Works</b>. Tap <b>Add a Program of Works</b>.</li>
+<li>Type the control number (for example CSES-2026-Q4-009), the project name and location, and type or paste the bill of quantities from Excel. Labor is 40% of the materials unless you change it.</li>
+<li>It prints in the school’s format on one page, with the seal and logo, prepared by the Physical Facilities Coordinator, reviewed by the School Head and approved by the Division Engineer. Type the <b>approval date</b> when it comes back.</li>
+<li>On the repair check, link the Program of Works. The Desk can fill the check’s lines from it and warns when the check goes over it.</li></ol>`},
+{id:'k-janitor',c:'kinds',w:'school',t:'Janitorial and general services',k:'janitor janitorial utility grasscutting tree cutting general services daily wage 480 dtr job order',b:`
+<ul><li>The daily wage follows the Rules (₱480 a day). The Desk warns above it.</li>
+<li>Attach the Job Order, the DTR with the actual time in and out (not the same time every day), the Accomplishment Report and the Acknowledgment Receipt. Janitorial also needs the certification that the school has no permanent utility worker.</li></ul>`},
+{id:'k-others',c:'kinds',w:'school',t:'Other kinds: training, graduation, hauling, checkbooks, bond',k:'training inset catering graduation completers snacks hauling transport checkbook accountable forms fidelity bond taxes documentary stamps reimbursement',b:`
+<ul><li><b>Training / INSET</b>: memo, approved matrix, procurement set, invoices with pictures per day and the signed attendance per day.</li>
+<li><b>Graduation and moving up</b>: snacks under Other MOOE with the procurement set, pictures and signed attendance.</li>
+<li><b>Hauling</b>: Acknowledgment Receipt with pick-up point, destination and items, signed by the driver, and pictures.</li>
+<li><b>Checkbooks</b>: Accountable Forms, paid to Land Bank. <b>Fidelity bond</b>: paid to the Bureau of the Treasury.</li>
+<li><b>Reimbursement to the School Head</b> for several small receipts: one check, each receipt listed on its own.</li></ul>`},
+/* ---------- Reports and printing ---------- */
+{id:'monthly',c:'reports',w:['school','district','division'],t:'Monthly reports (bank reconciliation and the rest)',k:'monthly reports bank reconciliation brs weaccess statement check disbursement record cash disbursements register raaf 10th outstanding checks interest',b:`
+<ol><li>By the 10th of each month, send the Division Accounting Unit the reports for the month before: the <b>Bank Reconciliation Statement</b> with its schedules, the <b>weAccess statement</b>, the <b>Check Disbursement Record</b>, the <b>Cash Disbursements Register</b> and the <b>RAAF</b>.</li>
+<li>In the Desk, open <b>Monthly reports</b> and choose the month. Type the weAccess ending balance.</li>
+<li>Tick the checks that appear on the statement. The ones left are the outstanding checks.</li>
+<li>Add the bank’s own entries (interest, tax withheld, bank charges, interest returned to the Treasury). The reconciliation says <b>Balanced</b> when the books and the bank agree.</li>
+<li>Print the forms and type the date you sent them.</li></ol>
+<p>Generate the weAccess statement after the month ends, so the interest and tax at the end of a quarter are included. Your district and the Division see each month’s status.</p>`},
+{id:'print-portal',c:'reports',w:'all',t:'Printing from the portal',k:'print forms cover page register liquidation report summary preview paper three copies sets',b:`
+<ul><li>Open the liquidation and find <b>Print forms</b>. Tick the forms you need, choose the paper, click <b>Preview and print</b>, then <b>Print</b>.</li>
+<li>The forms use your logo, heading and footer, and the names set by the Division. Print 3 copies for signature: school, district or Division, and COA.</li>
+<li>Per-check forms (PR, canvass, PO, IAR, DV and others) are printed from the Liquidation Desk.</li></ul>`},
+{id:'order',c:'reports',w:'school',t:'Order of the liquidation folder',k:'order filing arrangement folder sequence attachments arrangement ayos',b:`
+<ol><li>Cash Disbursements Register</li><li>Liquidation Report</li><li>Check Disbursement Record</li><li>RAAF</li><li>weAccess bank statement</li><li>Overall Summary of Expenses</li><li>Certification of turnover of the Liquidation Report to the Teachers’ Association</li><li>Signed minutes of meeting</li><li>Scanned approved cash advance papers</li><li>The papers of each check</li></ol>
+<p>As presented in the Division training of October 27–29, 2026. The quarter package in the Desk prints in this order.</p>`},
+/* ---------- Districts ---------- */
+{id:'d-codes',c:'district',w:['district','division','admin'],t:'Give a sign-in code',k:'sign in code give new code accounts tab copy message password reset',b:`
+<ol><li>Open the <b>Accounts</b> tab. Every school of your district is listed with its -SH and -AO accounts.</li>
+<li>Tap <b>Give sign-in code</b> (or <b>New sign-in code</b> for a forgotten password).</li>
+<li>Tap <b>Copy message</b> and send it to the person by text or Messenger. The code is shown only once.</li></ol>`},
+{id:'d-left',c:'district',w:['district','admin'],t:'When someone leaves for good',k:'mark as left retired resigned transferred close account',b:`
+<ul><li>Tap <b>Mark as left</b>. They can no longer sign in, and open liquidations can be split at their last day.</li>
+<li>Give the next holder a new sign-in code for the same username.</li></ul>`},
+{id:'d-review',c:'district',w:'district',t:'Check a submission, forward or return it',k:'check review forward division return remark hard copy received waiting',b:`
+<ol><li>The portal opens on the quarter that has submissions waiting for you. Click a school to open it.</li>
+<li>Look at the checks, receipts, photos and the warnings. Open the school’s Desk (view only) to see every form.</li>
+<li>Tick each hard copy once you have received it.</li>
+<li><b>Checked – forward to Division</b> sends it on. <b>Return to school</b> needs a remark that says exactly what to fix.</li></ol>`},
+{id:'d-monitor',c:'district',w:'district',t:'Follow your schools',k:'monitoring progress lowest overdue monthly reports status district',b:`
+<ul><li><b>Monitoring</b>: progress bar and status per school; sort by <b>Lowest % first</b>.</li>
+<li><b>Monthly reports</b>: which schools sent each month’s reports.</li>
+<li>Late quarters are marked <b>Overdue</b>.</li></ul>`},
+/* ---------- Division ---------- */
+{id:'v-verify',c:'division',w:'division',t:'Verify and record the JEV, or return',k:'verify jev record division accounting return remark',b:`
+<ol><li>Open a school that is waiting for the Division.</li>
+<li>Enter the JEV number and click <b>Verify and record JEV</b>, or return it with a remark.</li>
+<li><b>By district</b> shows each district’s progress.</li></ol>`},
+{id:'v-rules',c:'division',w:['division','admin'],t:'Rules for all schools',k:'rules canvass threshold wage cap mobile cap deadlines holidays settings division',b:`
+<ul><li><b>Rules for all schools</b> changes the canvass amount, the caps, deadlines and holidays for everyone. Schools see them in the Desk under School setup &amp; rules.</li></ul>`},
+{id:'v-units',c:'division',w:['unit','division'],t:'Division units: liquidating a cash advance',k:'unit office training development ict cash advance activity payment cash ada submit division accounting',b:`
+<ol><li>Click <b>Record a new cash advance</b> for each activity: purpose, ADA or check number, date received and amount.</li>
+<li>Open it and add each payment, paid by check, in cash or by ADA.</li>
+<li>Add photos, then click <b>Submit to Division Accounting</b>. Unit liquidations do not pass through a district.</li></ol>`},
+{id:'v-admin',c:'division',w:'admin',t:'For the administrator',k:'admin administrator accounts school list import add school district unit cleanup test mode sample data pilot setup',b:`
+<ul><li>Accounts are made automatically for every school, district and unit when you import the school list (<b>School ID | School name | District</b>) in <b>Pilot setup</b>, or add one at a time.</li>
+<li>The <b>Accounts</b> tab gives sign-in codes to anyone; <b>Mark as left</b> closes an account until the next holder signs in.</li>
+<li><b>Automatic cleanup</b> removes liquidations verified more than 3 years ago, with 30 days’ notice and a folder to download first.</li>
+<li>Test mode shows the portal as any account, for demonstrations; nothing is saved.</li>
+<li><b>Delete this liquidation (testing)</b> works at any stage. <b>Sample data</b> removes the fictional schools or puts them back.</li></ul>`},
+/* ---------- Questions people ask ---------- */
+{id:'f-pr-higher',c:'faq',w:'school',t:'Why is the PR (or the Program of Works) higher than what we bought?',k:'pr higher price estimate projection canvass lowest po actual mas mataas presyo',b:`
+<p>That is normal. PR and Program of Works prices are <b>estimates</b> made before the canvass, and they are meant to be on the high side. After the canvass, the lowest supplier wins, and the PO, IAR and invoice carry the <b>actual</b> price. The check follows the PO and the invoice.</p>`},
+{id:'f-print',c:'faq',w:'all',t:'Do we still print and sign?',k:'print sign hard copy paper signature still needed copies coa',b:`
+<p>Yes. The portal makes the forms and follows the liquidation, but the signed papers still go to the district, the Division and COA. Print 3 copies for signature.</p>`},
+{id:'f-both',c:'faq',w:'school',t:'Can the School Head and the AO both use it?',k:'school head ao both two accounts submit absent',b:`
+<p>Yes. Each has an account (-SH and -AO). Both can encode, even at the same time, and either can submit when the other is away.</p>`},
+{id:'f-wrongno',c:'faq',w:'school',t:'I typed the wrong check number or amount. What now?',k:'wrong check number mistake correct fix amount mali typo',b:`
+<p>Open the check in the Desk and correct it. If it is already submitted, ask your district to return it. Photos left under the old number are pointed out so you can move them.</p>`},
+{id:'f-after',c:'faq',w:'school',t:'Can I change a quarter after I submitted it?',k:'change after submit edit locked submitted',b:`
+<p>Not while it is with the district or the Division. Ask them to return it; then change it and resubmit.</p>`},
+{id:'f-lower',c:'faq',w:'school',t:'The check is a little lower than the invoice. How do I enter it?',k:'check lower than invoice difference shoulder school head pays difference adjustment',b:`
+<p>Keep the full cost on the invoice, PR, canvass and PO. Type the difference under <b>Less tax withheld / adjustment</b> so the check amount matches the check.</p>`},
+{id:'f-typing',c:'faq',w:'school',t:'Do I have to type every item one by one?',k:'type items one by one faster excel paste photo read',b:`
+<p>No. ${go('desk-pr-excel','Bring in the PR from Excel')}, paste rows from Excel, or ${go('desk-read','read a photo')} of the PR, canvass or receipt.</p>`},
+{id:'f-names',c:'faq',w:'school',t:'Where do I change the names printed on the forms?',k:'names signatories change bac custodian requester teacher position wrong name',b:`
+<p>In the Desk, <b>School setup &amp; rules</b>. The school’s name, the School Head, the SDS and the district bookkeeper come from the portal; ask your district or the Division to change those.</p>`},
+{id:'f-phone',c:'faq',w:'all',t:'Can I use my phone?',k:'phone cellphone mobile android iphone',b:`
+<p>Yes, for signing in, encoding, photos and checking. Print from a computer with Chrome.</p>`},
+{id:'f-cancel',c:'faq',w:'school',t:'How do I record a spoiled or cancelled check?',k:'spoiled cancelled void check gap',b:`
+<p>Add it with its number and tick <b>Cancelled check</b> (in the portal: Paid by → Cancelled / spoiled check). It keeps the numbers complete and carries no amount.</p>`},
+{id:'f-delete',c:'faq',w:'school',t:'How do I remove a check I entered by mistake?',k:'delete remove check mistake',b:`
+<p>Open the check in the Desk and tap <b>Delete check</b> (only while the quarter is not submitted).</p>`},
+{id:'f-reminders',c:'faq',w:'school',t:'Must I fix every yellow reminder?',k:'reminder warning yellow red must fix',b:`
+<p>No. Yellow reminders are things to look at; you can still save and print. Red items in the portal’s <b>Check numbers and receipts</b> box must be fixed before you can submit.</p>`},
+{id:'f-who-sees',c:'faq',w:'all',t:'Who can see our liquidation?',k:'privacy who sees other schools district division',b:`
+<p>Your school, your district and the Division. Other schools cannot see it.</p>`},
+{id:'f-rules',c:'faq',w:'all',t:'The district or Accounting told us something different from the Help. Who wins?',k:'rules different instruction accounting district official policy',b:`
+<p>Follow your district and the Accounting Unit. The portal is a Division of Aklan pilot; its rules follow the Division training of October 2026 and can be changed by the Division. Tell the developer through the Support page so the portal can be updated.</p>`},
+{id:'f-version',c:'faq',w:'all',t:'What does “Desk v36” mean?',k:'version desk v36 update new',b:`
+<p>It is the version of the Liquidation Desk. Updates do not change what you already encoded; older checks keep their forms unless you choose to apply a new rule to them.</p>`},
+{id:'f-old-rules',c:'faq',w:'school',t:'An older check shows “Apply these rules to this check”. Should I click it?',k:'apply these rules older check new rules update',b:`
+<p>Only if you want that check to follow the newer rules (for example the PO and IAR for furniture and equipment repairs, and the PR grouped by account code). If the check was already signed and submitted, leave it.</p>`},
+/* ---------- When something goes wrong ---------- */
+{id:'t-sorry',c:'trouble',w:'all',t:'“Sorry, the file could not be opened”',k:'sorry file could not be opened error google accounts',b:`
+<p>This happens with the older Google address when the browser is signed in to several Google accounts. Open <b>${S}</b> instead.</p>`},
+{id:'t-notsaved',c:'trouble',w:'school',t:'The Desk says “Not saved yet”',k:'not saved yet saving internet offline lost work',b:`
+<p>The internet dropped. Your work is kept on this computer and the Desk keeps trying. Do not clear the browser. The next time you open the Desk on this computer, it sends what was missing. If your sign-in expired, sign in again and it saves.</p>`},
+{id:'t-wait',c:'trouble',w:'all',t:'The sign-in says to wait',k:'wait 5 minutes too many tries locked out wrong password',b:`
+<p>After ten wrong passwords or codes, the sign-in waits 5 minutes. Wait, or ask your district for a new sign-in code; it ends the wait at once.</p>`},
+{id:'t-print',c:'trouble',w:'all',t:'The printed form is cut off or on the wrong paper',k:'print cut off wrong paper size margin scale shrink long bond a4 short',b:`
+<ul><li>Choose the same paper in the print window as in the portal or Desk (long bond, A4 or short).</li>
+<li>Set the scale to 100% (Default) and use Chrome on a computer.</li>
+<li>If the print window does not open, press Ctrl+P.</li></ul>`},
+{id:'t-excel',c:'trouble',w:'school',t:'The Excel file does not download',k:'excel download blocked not working file',b:`
+<p>Allow downloads for the site when the browser asks. If it still does not download, open the portal at <b>${S}</b> on a computer and try again.</p>`},
+{id:'t-reader',c:'trouble',w:'school',t:'Reading a photo is slow or misreads numbers',k:'reader slow photo misread ocr blurry',b:`
+<ul><li>The first time, the reader downloads about 42 MB; after that it is faster.</li>
+<li>Take the photo straight, in good light, filling the screen with the paper.</li>
+<li>Always check what it read before you use it.</li></ul>`},
+{id:'t-reminders',c:'trouble',w:'school',t:'What the yellow reminders on a check mean',k:'reminders warnings yellow box sunday holiday position fare dates order',b:`
+<ul><li>They point out what the district or COA usually asks about: dates on weekends or holidays, dates out of order, missing positions, fares without receipts above the limit, amounts above a cap, and the like.</li>
+<li>Fix what you can. A reminder never stops you from saving or printing.</li></ul>`},
+{id:'t-balance',c:'trouble',w:'school',t:'The balance is not zero',k:'balance not zero difference total cash advance mismatch',b:`
+<ul><li>Compare the cash advance with the total of the checks. A missing or doubled check, a wrong amount, or tax withheld not typed are the usual reasons.</li>
+<li><b>Search all quarters</b> helps find a check entered in another quarter.</li></ul>`},
+{id:'t-same',c:'trouble',w:'school',t:'“The same check was changed by someone else”',k:'same check changed someone else conflict two people',b:`
+<p>You and another user changed the same check. The last one saved is kept. Open the check and look at it again.</p>`},
+{id:'t-ask',c:'trouble',w:'all',t:'Still stuck? Who to ask',k:'support contact help ask developer district bookkeeper accounting ict coordinator',b:`
+<ul><li>Using the portal, signing in or passwords: the developer (see <b>Support</b>).</li>
+<li>Liquidation rules, account codes, returned submissions: your District Bookkeeper or the Accounting Unit.</li>
+<li>Internet or computer problems: your District ICT Coordinator.</li>
+<li>Write down what you were doing and the exact message; a screenshot helps.</li></ul>`},
+/* ---------- Rules, codes and words ---------- */
+{id:'amounts',c:'rules',w:'all',t:'Amounts to remember',k:'amounts limits caps threshold 1000 480 50000 300 500 40 percent',b:`
+<ul><li>Canvass, abstract and PO: from <b>₱1,000</b> per check or receipt.</li>
+<li>Janitorial and general services: <b>₱480</b> a day.</li>
+<li>Semi-expendable: below <b>₱50,000</b> per item.</li>
+<li>Labor for building repairs: <b>40%</b> of the actual materials.</li>
+<li>Fares without a receipt on the CENRR: up to <b>₱300</b>.</li>
+<li>Utility bills above <b>₱500</b>: paid by check directly to the provider.</li></ul>
+<p>The amounts the Desk follows are under School setup &amp; rules; the Division can change them.</p>`},
+{id:'codes',c:'rules',w:'all',t:'Common account codes',k:'account code uacs list codes 502',b:`
+<table class="hp-tab"><tr><th>Code</th><th>Account</th></tr>
+<tr><td>5020101000</td><td>Travelling Expenses – Local</td></tr><tr><td>5020201000</td><td>Training Expenses</td></tr><tr><td>5020301000</td><td>Office Supplies</td></tr><tr><td>5020302000</td><td>Accountable Forms</td></tr><tr><td>5020309000</td><td>Fuel, Oil and Lubricants</td></tr><tr><td>5020321000</td><td>Semi-Expendable Machinery and Equipment</td></tr><tr><td>5020322000</td><td>Semi-Expendable Furniture, Fixtures and Books</td></tr><tr><td>5020399000</td><td>Other Supplies</td></tr><tr><td>5020401000</td><td>Water</td></tr><tr><td>5020402000</td><td>Electricity</td></tr><tr><td>5020502001</td><td>Telephone – Mobile</td></tr><tr><td>5020502002</td><td>Telephone – Landline</td></tr><tr><td>5020503000</td><td>Internet</td></tr><tr><td>5021202000</td><td>Janitorial Services</td></tr><tr><td>5021203000</td><td>Security Services</td></tr><tr><td>5021299000</td><td>Other General Services</td></tr><tr><td>5021304000</td><td>Repairs – Buildings and Other Structures</td></tr><tr><td>5021305000</td><td>Repairs – Machinery and Equipment</td></tr><tr><td>5021307000</td><td>Repairs – Furniture and Fixtures</td></tr><tr><td>5021501000</td><td>Taxes, Duties and Licenses</td></tr><tr><td>5021502000</td><td>Fidelity Bond Premiums</td></tr><tr><td>5029902000</td><td>Printing and Publication</td></tr><tr><td>5029904000</td><td>Transportation and Delivery</td></tr><tr><td>5029999000</td><td>Other MOOE</td></tr></table>
+<p>The full list is in the Desk under School setup &amp; rules.</p>`},
+{id:'words',c:'rules',w:'all',t:'Words to know',k:'glossary abbreviations meaning ada lddap ors dv jev lr soe raaf brs pr rfq aoq po jo iar ris ics par pow wmr cenrr att ctc bac mooe uacs',b:`
+<dl class="hp-dl">
+<dt>ADA / LDDAP-ADA</dt><dd>Advice to Debit Account: how the cash advance reaches the school’s bank account.</dd>
+<dt>AIP / SIP</dt><dd>Annual Implementation Plan / School Improvement Plan, where MOOE expenses must come from.</dd>
+<dt>ORS, DV, JEV</dt><dd>Obligation Request and Status, Disbursement Voucher, Journal Entry Voucher (numbers from the Division).</dd>
+<dt>CDReg</dt><dd>Cash Disbursements Register (Appendix 43).</dd>
+<dt>CDRec</dt><dd>Check Disbursement Record.</dd>
+<dt>LR</dt><dd>Liquidation Report (Appendix 44).</dd>
+<dt>SOE</dt><dd>Summary of Expenses, per check and for the quarter.</dd>
+<dt>RAAF</dt><dd>Report of Accountability for Accountable Forms (your checks).</dd>
+<dt>BRS</dt><dd>Bank Reconciliation Statement, monthly.</dd>
+<dt>PR, RFQ, AOQ, PO</dt><dd>Purchase Request, Request for Quotation (canvass), Abstract of Quotation, Purchase Order.</dd>
+<dt>JO</dt><dd>Job Order (for labor, or for repair of equipment).</dd>
+<dt>IAR</dt><dd>Inspection and Acceptance Report.</dd>
+<dt>RIS, ICS, PAR</dt><dd>Requisition and Issue Slip, Inventory Custodian Slip, Property Acknowledgment Receipt.</dd>
+<dt>POW</dt><dd>Program of Works: the bill of materials and labor of a repair, approved by the Division Engineer.</dd>
+<dt>WMR</dt><dd>Waste Materials Report.</dd>
+<dt>CENRR</dt><dd>Certificate of Expenses Not Requiring Receipts (travel fares).</dd>
+<dt>ATT, LS, IT, CTC</dt><dd>Authority to Travel, Locator Slip, Itinerary of Travel, Certificate of Travel Completed.</dd>
+<dt>AR</dt><dd>Acknowledgment Receipt (payment without an OR).</dd>
+<dt>BAC</dt><dd>Bids and Awards Committee of the school.</dd>
+<dt>UACS</dt><dd>The account codes used on every form.</dd>
+<dt>Non-IU</dt><dd>A school that is not an Implementing Unit: its MOOE comes as a cash advance and is liquidated.</dd></dl>`}
+]}
+/* synonyms: a search word also finds these (English, Filipino, Akeanon) */
+const HELP_SYN={password:['sign in code','sign in'],passwd:['password'],login:['sign in'],signin:['sign in'],resibo:['or','receipt','invoice'],receipt:['or','invoice'],or:['receipt','invoice'],invoice:['or','receipt'],tseke:['check'],cheke:['check'],tsek:['check'],cheque:['check'],presyo:['price','cost'],kuryente:['electricity'],tubig:['water'],pasahe:['fare','travel'],pamasahe:['fare','travel'],guba:['repair'],kwarta:['cash advance','amount'],byahe:['travel'],biyahe:['travel'],lakbay:['travel'],seminar:['travel','training'],pirma:['sign','signatory','signature'],litrato:['photo'],picture:['photo'],pictures:['photo'],larawan:['photo'],kuha:['photo'],scan:['photo','read'],ayos:['repair'],kumpuni:['repair'],sira:['repair'],gamit:['supplies'],labor:['labor','workers'],trabahador:['labor'],manggagawa:['labor'],sweldo:['labor','wage','payroll'],janitor:['janitorial'],utility:['bills','electricity','janitorial'],load:['mobile'],cellphone:['mobile','phone'],cp:['mobile','phone'],paano:[],pano:[],ibalik:['returned'],balik:['returned'],mali:['wrong','mistake'],tanggal:['delete','remove'],burahin:['delete'],petsa:['date','dates'],linggo:['sunday'],printer:['repair','equipment','print'],pow:['program of works'],aoq:['abstract'],rfq:['canvass'],brs:['bank reconciliation'],soe:['summary of expenses'],lr:['liquidation report'],ca:['cash advance'],ada:['cash advance'],code:['account code','sign in code'],codes:['account code'],uacs:['account code'],excel:['excel','xlsx'],offline:['offline','no internet'],internet:['internet']};
+const HELP_STOP=new Set(['the','a','an','to','of','in','on','for','and','how','do','does','i','my','is','are','what','can','where','when','why','ko','ang','sa','ng','mga','ba','po','yung','na','si','ni','ano','saan','paano','pano','kung','it','at']);
+function hpNorm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
+function hpStrip(h){return String(h||'').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&[a-z]+;/g,' ')}
+const HP={q:'',who:'',open:{}};
+function hpCss(){if(document.getElementById('hpCss'))return;const s=document.createElement('style');s.id='hpCss';s.textContent=`
+.hp{max-width:860px;color:var(--ink,#172033)}.hp h1{margin:0 0 4px}.hp .hp-sub{color:var(--muted,#5a6479);margin:0 0 14px}
+.hp-sbox{display:flex;align-items:center;gap:8px;background:var(--panel,#fff);border:2px solid var(--accent,#1f4e8c);border-radius:12px;padding:6px 10px;position:sticky;top:6px;z-index:3;box-shadow:0 2px 10px rgba(16,24,40,.08)}
+.hp-sbox svg{width:20px;height:20px;flex:none;stroke:var(--accent,#1f4e8c);fill:none;stroke-width:2}.hp-sbox input,.hp-sbox input:focus{flex:1;min-width:0;border:0;outline:0;box-shadow:none;background:transparent;font-size:17px;padding:6px 2px;margin:0;width:auto;border-radius:0}.hp-sbox input::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+.hp-sbox button{border:0;background:var(--accent-soft,#e5edf8);color:var(--ink,#172033);border-radius:99px;width:28px;height:28px;min-width:0;padding:0;margin:0;line-height:1;font-size:14px;display:grid;place-items:center;cursor:pointer;flex:none;box-shadow:none}.hp-sbox button[hidden]{display:none}
+.hp-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}.hp-row .hp-l{font-size:13px;color:var(--muted,#5a6479);align-self:center;margin-right:2px}
+.hp-chip{border:1px solid var(--line,#dbe0ea);background:var(--panel,#fff);color:var(--ink,#172033);border-radius:99px;padding:5px 12px;font-size:13.5px;font-weight:600;cursor:pointer}
+.hp-chip.on{background:var(--accent,#1f4e8c);border-color:var(--accent,#1f4e8c);color:var(--accent-ink,#fff)}
+.hp-pop{background:var(--accent-soft,#e5edf8);border-radius:12px;padding:12px 14px;margin:14px 0 4px}.hp-pop b{display:block;margin-bottom:6px}.hp-pop ul{margin:0;padding-left:20px;columns:2;column-gap:24px}.hp-pop li{margin:2px 0;break-inside:avoid}
+.hp-count{font-size:14px;color:var(--muted,#5a6479);margin:14px 0 6px}
+.hp-sec h2{margin:22px 0 8px;font-size:19px}
+.hp-t{background:var(--panel,#fff);border:1px solid var(--line,#dbe0ea);border-radius:10px;margin:6px 0;scroll-margin-top:70px}
+.hp-t>summary{cursor:pointer;padding:11px 14px;font-weight:600;list-style:none;display:flex;gap:8px;align-items:baseline}.hp-t>summary::-webkit-details-marker{display:none}
+.hp-t>summary::before{content:'▸';color:var(--accent,#1f4e8c);flex:none;transition:transform .15s}.hp-t[open]>summary::before{transform:rotate(90deg)}
+.hp-t>summary .hp-st{flex:1}.hp-tag{font-size:11.5px;font-weight:600;color:var(--muted,#5a6479);white-space:nowrap}
+.hp-b{padding:0 16px 12px 34px}.hp-b p{margin:6px 0}.hp-b ol,.hp-b ul{padding-left:20px;margin:6px 0}.hp-b li{margin:4px 0}
+.hp-b a,.hp a[data-hgo]{color:var(--accent,#1f4e8c);font-weight:600}
+.hp-tip{background:var(--accent-soft,#e5edf8);border-radius:8px;padding:8px 10px}
+.hp-tab{border-collapse:collapse;width:100%;font-size:14px}.hp-tab td,.hp-tab th{border-bottom:1px solid var(--line,#dbe0ea);padding:4px 6px;text-align:left;vertical-align:top}.hp-tab td:first-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+.hp-dl dt{font-weight:700;margin-top:8px}.hp-dl dd{margin:0 0 0 14px}
+.hp mark{background:#ffe48a;color:#172033;border-radius:3px;padding:0 1px}
+.hp-none{background:var(--panel,#fff);border:1px dashed var(--line,#dbe0ea);border-radius:10px;padding:14px}
+.hp-flash{box-shadow:0 0 0 3px var(--accent,#1f4e8c)}
+.hp-off{color:var(--muted,#5a6479);font-size:13px;margin-top:18px}
+@media (max-width:600px){.hp-pop ul{columns:1}.hp-b{padding:0 12px 12px 26px}.hp-sbox input{font-size:16px}.hp-tag{display:none}}
+@media print{.hp-sbox,.hp-row,.hp-pop{display:none}}`;document.head.appendChild(s)}
+function hpWho(w){return Array.isArray(w)?w:[w||'all']}
+function hpEsc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c])}
+/* the words of a search and what each may match */
+function hpTerms(q){return hpNorm(q).split(' ').filter(w=>w&&!HELP_STOP.has(w)).map(w=>({w,alt:[w,...(HELP_SYN[w]||[]).map(hpNorm)]}))}
+function hpHit(text,t){return t.length<=3?(' '+text+' ').includes(' '+t+' '):(' '+text).includes(' '+t)}
+/* a word of one or two letters (OR, CA, LR) is matched only where it is written in capitals, so “or” in a sentence is not a hit */
+function hpCaps(raw,a){return new RegExp('(^|[^A-Za-z])'+a.toUpperCase()+'([^A-Za-z]|$)').test(raw)}
+function hpScore(tp,terms){if(!tp._i)tp._i={t:hpNorm(tp.t),k:hpNorm(tp.k),b:hpNorm(hpStrip(tp.b)),rt:tp.t,rk:tp.k,rb:hpStrip(tp.b)};const I=tp._i;let s=0;const used=[];
+ for(const x of terms){let best=0;for(const a of x.alt){const v=a.length<=2?(hpCaps(I.rt,a)?6:hpCaps(I.rk,a)?4:hpCaps(I.rb,a)?2:0):hpHit(I.t,a)?6:hpHit(I.k,a)?4:hpHit(I.b,a)?1:0;if(v){used.push(a);if(v>best)best=v}}if(!best)return null;s+=best}return {s,used}}
+function hpMark(el,words){const ws=[...new Set(words)].filter(Boolean).sort((a,b)=>b.length-a.length),q=w=>w.replace(/[.*+?^$()|[\]\\{}]/g,'\\$&').replace(/ /g,'\\W+');
+ const lo=ws.filter(w=>w.length>2),sh=ws.filter(w=>w.length<=2);
+ if(lo.length)hpMarkRe(el,new RegExp('\\b(?:'+lo.map(q).join('|')+')','gi'));
+ if(sh.length)hpMarkRe(el,new RegExp('\\b(?:'+sh.map(w=>q(w.toUpperCase())).join('|')+')\\b','g'))}
+function hpMarkRe(el,re){const walk=n=>{if(n.nodeType===3){const t=n.nodeValue;re.lastIndex=0;if(!re.test(t))return;re.lastIndex=0;const f=document.createDocumentFragment();let last=0,m;while((m=re.exec(t))){if(!m[0]){re.lastIndex++;continue}f.appendChild(document.createTextNode(t.slice(last,m.index)));const k=document.createElement('mark');k.textContent=m[0];f.appendChild(k);last=m.index+m[0].length}f.appendChild(document.createTextNode(t.slice(last)));n.parentNode.replaceChild(f,n)}
+  else if(n.nodeType===1&&n.tagName!=='MARK')[...n.childNodes].forEach(walk)};walk(el)}
+function helpView(root,o){o=o||{};hpCss();const T=helpTopics(o),byId={};T.forEach(t=>byId[t.id]=t);
+ if(o.q!=null&&o.q!=='')HP.q=o.q;if(o.who&&!HP.who)HP.who=o.who;if(!HP.who)HP.who='all';
+ const whoName=k=>(HELP_WHO.find(w=>w[0]===k)||['',''])[1],catName=k=>(HELP_CATS.find(c=>c[0]===k)||['',''])[1];
+ const shown=t=>HP.who==='all'||hpWho(t.w).includes('all')||hpWho(t.w).includes(HP.who);
+ const tags=t=>{const w=hpWho(t.w);return w.includes('all')?'':w.map(whoName).join(' · ')};
+ const card=(t,open)=>`<details class="hp-t" id="hp-${t.id}" data-id="${t.id}" ${open?'open':''}><summary><span class="hp-st">${hpEsc(t.t)}</span><span class="hp-tag">${hpEsc(tags(t))}</span></summary><div class="hp-b">${t.b}</div></details>`;
+ root.innerHTML=`<div class="hp">${o.back||''}<h1>Help</h1><p class="hp-sub">Type a word to search, or open a topic below. Steps for each task, answers to common questions, and the rules the Desk follows.</p>
+  <div class="hp-sbox"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input type="search" id="hpQ" placeholder="Search: bills, sign-in code, canvass, resibo, travel, POW…" aria-label="Search the help" autocomplete="off" value="${hpEsc(HP.q)}"><button type="button" id="hpX" title="Clear the search" aria-label="Clear the search" ${HP.q?'':'hidden'}>✕</button></div>
+  <div class="hp-row" role="group" aria-label="Help for"><span class="hp-l">Help for:</span>${HELP_WHO.map(([k,v])=>`<button type="button" class="hp-chip ${HP.who===k?'on':''}" data-hwho="${k}" aria-pressed="${HP.who===k}">${v}</button>`).join('')}</div>
+  <div id="hpBody"></div>${o.foot||''}</div>`;
+ const body=root.querySelector('#hpBody'),inp=root.querySelector('#hpQ'),xb=root.querySelector('#hpX');
+ const draw=()=>{const terms=hpTerms(HP.q);let h='';
+  if(!terms.length){const pop=HELP_POPULAR.map(id=>byId[id]).filter(t=>t&&shown(t));
+   h=(pop.length?`<div class="hp-pop"><b>Most asked</b><ul>${pop.map(t=>`<li><a href="#" data-hgo="${t.id}">${hpEsc(t.t)}</a></li>`).join('')}</ul></div>`:'')+
+    `<div class="hp-row" aria-label="Sections"><span class="hp-l">Go to:</span>${HELP_CATS.filter(([k])=>T.some(t=>t.c===k&&shown(t))).map(([k,v])=>`<button type="button" class="hp-chip" data-hcat="${k}">${v.split(':')[0]}</button>`).join('')}</div>`+
+    HELP_CATS.map(([k,v])=>{const ts=T.filter(t=>t.c===k&&shown(t));return ts.length?`<section class="hp-sec" id="hpc-${k}"><h2>${v}</h2>${ts.map(t=>card(t,!!HP.open[t.id])).join('')}</section>`:''}).join('');
+   body.innerHTML=h}
+  else{const res=T.filter(shown).map(t=>({t,r:hpScore(t,terms)})).filter(x=>x.r).sort((a,b)=>b.r.s-a.r.s);
+   const other=HP.who!=='all'?T.filter(t=>!shown(t)).filter(t=>hpScore(t,terms)).length:0;
+   h=`<p class="hp-count" aria-live="polite">${res.length?`${res.length} topic${res.length>1?'s':''} for “${hpEsc(HP.q.trim())}”${HP.who!=='all'?' for '+hpEsc(whoName(HP.who)):''}`:'No topic found'}${other?` · <a href="#" data-hwho="all">${other} more for everyone</a>`:''}</p>`;
+   h+=res.length?res.map((x,i)=>card(x.t,i<3||HP.open[x.t.id])).join(''):`<div class="hp-none">Nothing matched “${hpEsc(HP.q.trim())}”. Try a shorter or another word (for example <a href="#" data-hq="check">check</a>, <a href="#" data-hq="receipt">receipt</a>, <a href="#" data-hq="sign in">sign in</a>, <a href="#" data-hq="repair">repair</a>), or see <a href="#" data-hgo="t-ask">who to ask</a>.</div>`;
+   body.innerHTML=h;const words=res.flatMap(x=>x.r.used);body.querySelectorAll('.hp-t').forEach(d=>hpMark(d,words))}
+  wire()};
+ const goTopic=id=>{const t=byId[id];if(!t)return;if(!shown(t))HP.who='all';HP.q='';inp.value='';xb.hidden=true;HP.open[id]=true;syncWho();draw();
+  const el=root.querySelector('#hp-'+id);if(el){el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('hp-flash');setTimeout(()=>el.classList.remove('hp-flash'),1600)}};
+ const syncWho=()=>root.querySelectorAll('[data-hwho].hp-chip').forEach(b=>{b.classList.toggle('on',b.dataset.hwho===HP.who);b.setAttribute('aria-pressed',b.dataset.hwho===HP.who)});
+ function wire(){root.querySelectorAll('[data-hgo]').forEach(a=>a.onclick=e=>{e.preventDefault();goTopic(a.dataset.hgo)});
+  root.querySelectorAll('#hpBody [data-hwho]').forEach(a=>a.onclick=e=>{e.preventDefault();HP.who=a.dataset.hwho;syncWho();draw()});
+  root.querySelectorAll('[data-hq]').forEach(a=>a.onclick=e=>{e.preventDefault();HP.q=a.dataset.hq;inp.value=HP.q;xb.hidden=false;draw()});
+  root.querySelectorAll('[data-hcat]').forEach(b=>b.onclick=()=>{const s=root.querySelector('#hpc-'+b.dataset.hcat);if(s)s.scrollIntoView({behavior:'smooth',block:'start'})});
+  root.querySelectorAll('details.hp-t').forEach(d=>d.ontoggle=()=>{HP.open[d.dataset.id]=d.open})}
+ root.querySelectorAll('.hp-row [data-hwho]').forEach(b=>b.onclick=()=>{HP.who=b.dataset.hwho;syncWho();draw()});
+ let tm=0;inp.oninput=()=>{clearTimeout(tm);tm=setTimeout(()=>{HP.q=inp.value;xb.hidden=!HP.q;draw()},140)};
+ inp.onkeydown=e=>{if(e.key==='Escape'&&inp.value){inp.value='';HP.q='';xb.hidden=true;draw()}};
+ xb.onclick=()=>{inp.value='';HP.q='';xb.hidden=true;draw();inp.focus()};
+ draw();if(o.go)goTopic(o.go)}
+/* HELP-END */
 function showPage(pg){PAGE=pg;document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('on',b.dataset.page===pg));
  const back=`<button class="btn link" id="pgBack">← ${B?'Back to the portal':'Back to sign in'}</button>`;let h='';
  if(pg==='credits')h=`<div class="doc">${back}<h1>Credits</h1><p class="sub">The Division of Aklan MOOE Liquidation Portal was designed and developed by <b>Antoniño F. Tolentino</b>, Head Teacher I, Camanci Sur Elementary School. <button class="btn link" data-goto-page="about">About the developer →</button></p><h2>With thanks to</h2><ul class="credits">${CREDITS.map(c=>`<li><b>${esc(c[0])}</b><span>${esc(c[1])}</span></li>`).join('')}</ul><h2>Free software used</h2><p>Excel files: ExcelJS (MIT License). Reading photos of documents in the Liquidation Desk: PaddleOCR PP-OCRv6 models (Apache License 2.0) and ONNX Runtime Web (MIT License); the photo is read inside your browser and not sent anywhere.</p></div>`;
@@ -192,28 +675,8 @@ function showPage(pg){PAGE=pg;document.querySelectorAll('[data-page]').forEach(b
   <p>Before joining the public school system, he worked as a journalist, with almost two decades of experience writing for print and online publications. He began his DepEd career at Altavas Elementary School, then served as Teacher-in-Charge of Eahog Elementary School and Sapa Primary School before becoming Head Teacher of Camanci Sur Elementary School in 2016.</p></div></div>
   <h2>Apps he has built for DepEd schools and personnel</h2><ul class="apps"><li><b>Division of Aklan MOOE Liquidation Portal and Liquidation Desk</b>Encode each check once, print every liquidation form, and follow each liquidation from the school to the district and the Division.</li><li><b>CIAN (Complete Intelligent Attendance Network) DTR App</b>Daily timekeeping for DepEd employees.</li><li><b>MARTH (Mentoring and Readying Tomorrow’s Headliners)</b>A trainer app for the Schools Press Conference.</li></ul>
   <p class="small muted">Questions and suggestions about this portal are welcome through the <button class="btn link" data-goto-page="support">Support</button> page.</p></div>`;
- if(pg==='help')h=`<div class="doc">${back}<h1>Help</h1><p class="sub">How a quarter’s liquidation moves through the portal: the school submits, the district checks, the division verifies.</p>
-  <h2>Opening the portal</h2><ul><li>Open <b>${SITE}</b> on a phone or computer. It works in any browser, even one signed in to several Google accounts.</li><li>The older address, tinyurl.com/aklanmooeportal, still works, but it can show “Sorry, the file could not be opened” when the browser is signed in to more than one Google account. If that happens, use ${SITE}.</li></ul>
-  <h2>Your username</h2><ul><li>Your username is your <b>School ID</b> plus your post: <b>-SH</b> for the School Head and <b>-AO</b> for the AO or bookkeeper. Example: <b>114245-SH</b>.</li><li>Districts: <b>NUMANCIA-PSDS</b> (District Supervisor) and <b>NUMANCIA-BK</b> (District Bookkeeper), with your district’s name. Division units: <b>U-</b> and the unit, for example <b>U-ICT</b>. Division Accounting: <b>DIV-ACCTG</b>.</li><li>The username belongs to the post, not the person. When you transfer or retire, the next holder uses the same username with their own password.</li></ul>
-  <h2>First sign-in, or forgot your password</h2><ol><li>Ask your <b>District Supervisor or District Bookkeeper</b> for a sign-in code. District and Division staff ask the Division.</li><li>On the sign-in page, tap <b>First time or forgot password? Use a sign-in code</b>.</li><li>Type your username and the code (for example <b>K7QM-4TXP</b>).</li><li>If you are new in the post, choose <b>I am the new holder</b> and type your name and position. Then choose your own password.</li></ol><p>A code works once and lasts 7 days. Never share your password. After ten wrong tries the sign-in waits 5 minutes. A new sign-in code ends the wait at once. Your account and your work are not affected.</p>
-  <h2>For districts: giving sign-in codes</h2><ol><li>Open the <b>Accounts</b> tab. Every school of your district is listed with its -SH and -AO accounts.</li><li>Tap <b>Give sign-in code</b> (or <b>New sign-in code</b> for a forgotten password).</li><li>Tap <b>Copy message</b> and send it to the person by text or Messenger. The code is shown only once.</li><li>When someone leaves for good, tap <b>Mark as left</b>. They can no longer sign in, and open liquidations can be split at their last day.</li></ol>
-  <h2>For schools</h2><ol><li>Choose the quarter at the top. A number on a quarter means something there needs you (for a school: it was returned for fixing). Older quarters are under <b>Earlier quarters</b>.</li><li>Enter the cash advance: ADA number, date and amount.</li><li>Add each check with its <b>OR / invoice number</b> and date, or bring them in from the offline MOOE Liquidation Desk with its “Download backup” file.</li><li>Look at the <b>Check numbers and receipts</b> box and fix what it lists.</li><li>Click <b>Photos</b> beside a check to upload pictures (before, during, after, items delivered). In the Liquidation Desk, the <b>📷 Photos</b> button beside <b>Open the forms</b> takes you there. The caption is suggested from the check (the items bought and the supplier, or the purpose); click another suggestion or type your own. <b>Photo documentation (print)</b> makes the page for your liquidation folder. If you correct a check number later, the portal points out the photos left under the old number so you can move them.</li><li>When the balance is zero, click <b>Submit</b>. The quarter is locked unless the district or division returns it.</li><li>If it is returned, read the remarks in red, fix the problem, tick the box, and resubmit.</li><li><b>Trying the portal out?</b> Enter test checks freely. To remove them, open the quarter and use <b>Delete this quarter’s entries</b> (only before it is submitted). It also clears that quarter in the Liquidation Desk.</li></ol>
-  <h2>For division units (Training and Development, ICT Unit and others)</h2><ol><li>Click <b>Record a new cash advance</b> for each activity: the purpose, the ADA or check number, the date received and the amount.</li><li>Open it and add each payment. Choose whether it was paid by check, in cash or by ADA.</li><li>Add photos, then click <b>Submit to Division Accounting</b>. Unit liquidations do not pass through a district.</li></ol>
-  <h2>Your logo, heading and footer</h2><ul><li>Click <b>Our school</b> or <b>Our office</b> at the top of your page to upload your logo and set your address, contact numbers and footer.</li><li>The official heading lines (Republic of the Philippines, Department of Education, Region and Division) are set by the Division and are the same for everyone.</li></ul>
-  <h2>Deadlines</h2><ul><li>Each quarter's liquidation is due to the Division Accounting Unit on the date set by the Division (for 2026: March 31, June 30, September 30 and December 15). Your district may set an earlier date. The school's page shows how many days are left; the district and Division lists mark late ones as <b>Overdue</b>.</li></ul>
-  <h2>Special funds</h2><ul><li>SIIF, SNED, Additional MOOE, SBFP, Gulayan sa Paaralan and other funds released to the school are liquidated on their own: each has its own checks, register, Liquidation Report, deadline and approval steps. They share the school's LBP account and checkbook, so the Check Disbursement Record, the bank reconciliation and the RAAF cover them all.</li><li>On the school page, <b>Special funds → Record a special fund release</b>, or in the Liquidation Desk choose <b>+ Record a special fund release…</b> in the quarter list. Checks entered while a fund is chosen are charged to it; <b>Charged to</b> on a check moves it.</li><li>The district and the Division see each fund as its own row in the quarter it was released, with its own deadline.</li></ul>
-  <h2>Request for cash advance and the approved papers</h2><ul><li>In the Desk, on the quarter or fund page, <b>Request for cash advance</b> prints the request letter (certified by the PSDS, approved by the SDS), the ORS, the DV and the JEV in the Division's formats, from the list of programmed expenditures. Copy last quarter's list and change the amounts.</li><li>When the cash advance is released, type the ADA number and date and the ORS, DV and JEV numbers once. The amount released is what the liquidation follows.</li><li>Upload the scans of the approved papers and the LDDAP-ADA printout on the liquidation page (<b>Approved cash advance papers</b>). They are filed after the Teachers' Association certification, before each check's papers.</li></ul>
-  <h2>Monthly reports</h2><ul><li>By the 10th of each month, send the Division Accounting Unit the reports for the month before: the <b>Bank Reconciliation Statement</b> with its schedules, the <b>weAccess statement</b>, the <b>Check Disbursement Record</b>, the <b>Cash Disbursements Register</b> and the <b>RAAF</b>.</li><li>Open the <b>Liquidation Desk → Monthly reports</b>. Choose the month, type the weAccess ending balance, tick the checks that appear on the statement, and add the bank's own entries (interest, tax withheld, bank charges, interest returned to the Treasury). The reconciliation shows <b>Balanced</b> when the books and the bank agree. Print the forms, and type the date you sent them.</li><li>Generate the weAccess statement after the month ends, so the interest and tax at the end of a quarter are included.</li><li>The RAAF needs your checkbooks: register each one (first and last check number, date received) in the <b>Check numbers and receipts</b> box.</li><li>Your district and the Division see each month's status under <b>Monthly reports</b>; Division Accounting marks the month received.</li></ul>
-  <h2>Check numbers and receipts</h2><ul><li><b>Register your checkbook</b> (first and last check number) in the <b>Check numbers and receipts</b> box. The portal then flags a check number outside the series.</li><li><b>A check number can be used only once.</b> The portal will not accept the same number twice, in any quarter.</li><li><b>Spoiled or cancelled check?</b> Add it with “Paid by: Cancelled / spoiled check”, so there is no gap in the numbers.</li><li><b>Every payment needs its OR or sales invoice.</b> One check paying several receipts: click <b>Receipts</b> beside the check and add each one.</li><li>The receipts should add up to the check amount <b>plus any tax withheld</b>.</li><li>The portal also warns about the same OR from the same supplier used twice, receipts dated far from the check, and checks dated outside the quarter or before the cash advance arrived.</li><li>Red items must be fixed before you can submit. For yellow items, look at each one, then tick the box to submit.</li></ul>
-  <h2>Transfers, retirement and new designations</h2><ul><li>Open <b>Our school</b> or <b>Our office</b> and use <b>Leaving this post?</b> to record your last day.</li><li>For the School Head, a liquidation still open on that day is split (<b>turnover</b>): payments up to that day stay under your name, and the remaining cash moves to a new liquidation for the next holder.</li><li>Submitted liquidations stay under your name until they are verified. <b>Liquidations under your name</b> shows what is still open, for your clearance.</li><li>Your district then gives the next holder a sign-in code for the same username. At your new school, ask that district for the code of your new post.</li></ul>
-  <h2>The Liquidation Desk (detailed entry and every form)</h2><ul><li>Open your quarter and tap <b>📒 Liquidation Desk</b>. It is the same MOOE Liquidation Desk as the offline tool, now inside the portal.</li><li><b>Bring in a Purchase Request from Excel</b> instead of typing items one by one: in the Desk, tap <b>Bring in a PR from Excel</b> and choose the file. The Desk reads every sheet that has the PR’s items table (Unit, Item Description, Quantity, Unit Cost), shows the items and total to check, then adds each PR as a purchase. <b>Blank PR form (Excel)</b> gives the official layout to fill in. You can also copy item rows in Excel and use <b>Paste rows from Excel</b> on a check.</li><li><b>Forms made before the check.</b> When a Purchase Request, Purchase Order, Job Order, Authority to Travel or other form is prepared weeks or months before the check, tap <b>Start with a form</b>. Choose the nature of expense, the form and its date, then print it. That form keeps its date; the forms before it count back from it and the forms after it follow it (change any date under <b>Form dates</b>).</li><li>Such a purchase, or any purchase without a check number, is <b>not yet paid</b>: it is left out of the quarter and the portal until you type the check number and the check date. In later quarters it is listed under <b>Started earlier, not yet paid</b>. Once the check is in, the voucher and the other forms that go with the check take the check date, and the purchase moves to the quarter of the check.</li><li>Enter each check with its items, suppliers, OR / invoice numbers and canvass. The Desk makes every form: checklist, PR, canvass, abstract, PO, IAR, DV, payroll, and the quarterly register, Liquidation Report and Summary of Expenses. It also downloads Excel files.</li><li><b>Several receipts on one check.</b> For electricity, water, internet, telephone, mobile and security, the check has a <b>Bills paid by this check</b> table: one row per bill with its billing month, OR number, OR date and amount (<b>Add a bill</b> fills in the next month). For other expenses, give a line its own <b>OR / ref no.</b> and date. Each receipt is listed on its own in the Summary of Expenses, the register and the portal.</li><li><b>No OR.</b> When the payee has no official receipt (a laborer or driver, for example), choose <b>Proof of payment → No OR: Acknowledgment Receipt</b> on the check. The Desk adds the Acknowledgment Receipt to the forms, numbers it (AR No. year-month-series) and uses that number in place of the OR everywhere. Labor and hauling checks start this way.</li><li><b>Fixing a form in Excel:</b> on a check, tap <b>Download Excel</b>. Fix the yellow <b>Data</b> sheet (names, dates, amounts, items); every form in the file follows. Then tap <b>Bring back fixes from Excel</b> and choose the file: the Desk lists what changed, and <b>Apply</b> puts the same corrections in the Desk and the portal, so nothing is typed twice. School and signatory names (PTA president, BAC, custodian and the like) go to the School setup, so every form uses them; in the portal the Division keeps the school’s name, head and SDS. Names, descriptions, units, quantities, prices, dates and OR numbers typed straight on a form sheet come back too. Worked-out cells (amounts, totals, amounts in words) can’t: change what they come from. The Desk shows its version next to the school’s name.</li><li>Everything is <b>saved to the portal automatically</b>. Look for <b>All changes saved</b> under the <b>Back to the portal</b> button. Your district sees the same checks, and the check-number and receipt warnings and Monitoring use them.</li><li><b>Two people at once:</b> the School Head and the AO can both work in the Desk. The Desk shows who else is in it, and when you both save, the changes are combined check by check. If you both changed the same check, the last one saved is kept and the Desk tells you which check.</li><li><b>If the internet drops</b> while you work, the Desk says <b>Not saved yet</b> and keeps your work on this computer. It keeps trying, and the next time you open the Desk on this computer it sends what was missing. If your sign-in expires, the Desk asks you to sign in again and then saves.</li><li><b>On a phone</b>, each item of a check is shown as a small card, so every box fits on the screen.</li><li>Your school name, School Head, district bookkeeper and Division signatories come from the portal and cannot be changed in the Desk.</li><li>A quarter that is already submitted cannot be changed from the Desk unless it is returned.</li><li><b>No internet?</b> In the Desk, tap <b>Download backup</b>. Work in the offline MOOE Liquidation Desk file, then come back, open the Desk here and tap <b>Restore from backup</b>. It is sent to the portal.</li></ul>
-  <h2>Printing the forms</h2><ul><li>Open the liquidation and find <b>Print forms</b> on the right. Tick the forms you need: Cover page, Cash Disbursements Register (Appendix 43), Check Disbursement Record, Liquidation Report (Appendix 44), Summary of Expenses, and the Certification read by teachers.</li><li>Choose the paper (long bond, A4 or short bond), click <b>Preview and print</b>, then <b>Print</b>. Use a computer with Chrome for printing.</li><li>The forms use your school’s logo, heading and footer, and the names set by the Division. Print 3 copies for signature: school, district or Division, and COA.</li><li>Photo documentation is printed per check from its <b>Photos</b> button. Purchase requests, canvass, POs, IAR, DV and other per-check forms are printed from the <b>Liquidation Desk</b>.</li></ul>
-  <h2>Monitoring</h2><ul><li><b>Schools and offices:</b> tap <b>📊 Monitoring</b> at the top of your page. You see the cash advances of the year, how much is paid and liquidated, what the Division has verified, spending per month and per account code, and this quarter’s progress.</li><li><b>Districts:</b> the <b>Monitoring</b> tab shows every school of your district with a progress bar and its status. Sort by <b>Lowest % first</b> to see who needs help.</li><li><b>Division:</b> the <b>Monitoring</b> tab compares the districts and the division units. Click a district to see its schools.</li><li>On each progress bar, the dark line marks how much of the quarter has passed. A bar far behind the line means slow spending. Point at a bar to see the exact amounts.</li></ul>
-  <h2>Looking back</h2><ul><li><b>Year summary</b> shows every liquidation of the year with the amounts and JEV numbers, and totals per account code.</li><li><b>Search all quarters</b> finds a payee, check or OR number, particulars, or an amount in any quarter.</li></ul>
-  <h2>For districts</h2><ol><li>The portal opens on the quarter that has submissions waiting for you, and a number on each quarter shows how many. The tiles show how many are waiting. Click a school to open it.</li><li>Tick each hard copy once you have received it.</li><li><b>Checked – forward to Division</b> sends it on. <b>Return to school</b> needs a remark that says exactly what to fix.</li></ol>
-  <h2>For the division</h2><ol><li>Open a school that is waiting for the division.</li><li>Enter the JEV number and click <b>Verify and record JEV</b>, or return it with a remark.</li><li><b>By district</b> shows each district’s progress. <b>Rules for all schools</b> changes the canvass threshold and caps for everyone.</li></ol>
-  <h2>For the administrator</h2><ul><li>Accounts are made automatically for every school, district and unit when you import the school list in <b>Pilot setup</b>.</li><li>The <b>Accounts</b> tab gives sign-in codes to anyone, and <b>Mark as left</b> closes an account until the next holder signs in.</li><li><b>School list</b> imports the Division’s official list: <b>School ID | School name | District</b>.</li><li><b>Automatic cleanup</b> removes liquidations verified more than 3 years ago (the period can be changed), with 30 days’ notice and a folder to download first.</li><li>Test mode lets you view the portal as any account for demonstrations.</li><li><b>Test entries:</b> open any liquidation and use <b>Delete this liquidation (testing)</b>; it works at any stage, even after verification. <b>Sample data</b> in Pilot setup removes the fictional schools or puts them back.</li></ul></div>`;
- $('#app').innerHTML=h;document.querySelectorAll('[data-goto-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.gotoPage));$('#pgBack').onclick=()=>{PAGE='';document.querySelectorAll('[data-page]').forEach(b=>b.classList.remove('on'));B?load():showLogin()};window.scrollTo(0,0)}
+ if(pg==='help')h='<div id="hpRoot"></div>';
+ $('#app').innerHTML=h;if(pg==='help')helpView($('#hpRoot'),{site:SITE,back,who:B&&B.me&&{school:'school',district:'district',division:'division',admin:'admin'}[B.me.level]||'all'});document.querySelectorAll('[data-goto-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.gotoPage));$('#pgBack').onclick=()=>{PAGE='';document.querySelectorAll('[data-page]').forEach(b=>b.classList.remove('on'));B?load():showLogin()};window.scrollTo(0,0)}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
 
 /* ===== start ===== */
@@ -1049,5 +1512,5 @@ function fromOffline(d,q){if(!d||!d.settings||!Array.isArray(d.checks))throw new
   return {no:c.no,date:c.date,payee:c.payee,nature:c.cancelled?(c.purpose||'Cancelled'):c.purpose,code:ent.length===1?ent[0][0]:ent.length?'multi':'',amount,lines:ent.length>1?ent:null,cancelled:!!c.cancelled,tax,receipts:rl.some(r=>r.no)?rl:[]}});
  const ca=(fid?(d.funds||{})[fid]:(d.ca||{})[q])||{},rel={reqDate:ca.reqDate||'',orsNo:ca.orsNo||'',dvNo:ca.dvNo||'',jevNo:ca.jevNo||''};
  return {school:d.settings.school||'',checks,ca:{ada:ca.ada||'',adaDate:ca.adaDate||'',ca:+ca.amount||0,prevAmt:fid?0:+ca.prevAmt||0,rel,...(fid?{kind:ca.kind||'other',title:String(ca.title||'').trim(),due:ca.due||''}:{})}}}
-loadBrand();boot();
+loadBrand();boot().then(()=>{const m=(location.hash||'').match(/^#help(?:[=:](.*))?$/i);if(m){if(m[1])HP.q=decodeURIComponent(m[1]).replace(/\+/g,' ');showPage('help')}});
 </script></body></html>
