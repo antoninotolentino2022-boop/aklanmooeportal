@@ -187,7 +187,7 @@ const DEFAULT_SUPPORT='For questions about using the portal, signing in or passw
    t = title (a question for the FAQ), k = extra words people may search with (English, Filipino, Akeanon), b = the answer. */
 const HELP_CATS=[['start','Getting started'],['school','Schools: the quarter, step by step'],['desk','The Liquidation Desk'],['kinds','Kinds of expense and their papers'],['reports','Monthly reports and printing'],['district','For districts'],['division','For the Division, units and the administrator'],['faq','Questions people ask'],['trouble','When something goes wrong'],['rules','Rules, account codes and words to know']];
 const HELP_WHO=[['all','Everyone'],['school','Schools'],['district','Districts'],['division','Division'],['unit','Division units'],['admin','Administrator']];
-const HELP_POPULAR=['quick','f-pr-higher','desk-bills','desk-codes','signin','k-travel','k-repair-bldg','t-notsaved'];
+const HELP_POPULAR=['quick','f-pr-higher','integrated','desk-bills','desk-codes','signin','k-travel','k-repair-bldg','t-notsaved'];
 function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'<a href="#" data-hgo="'+id+'">'+t+'</a>';return [
 /* ---------- Getting started ---------- */
 {id:'quick',c:'start',w:'school',t:'Your first quarter, step by step',k:'start begin new first time quick guide steps overview paano magsimula umpisa',b:`
@@ -247,6 +247,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <ul><li><b>Register your checkbook</b> (first and last check number, date received). The portal then flags a check number outside the series, and the RAAF can be filled.</li>
 <li><b>A check number can be used only once</b>, in any quarter.</li>
 <li><b>Spoiled or cancelled check?</b> Add it as cancelled (in the Desk: tick <b>Cancelled check</b>), so there is no gap in the numbers.</li>
+<li><b>One series for the whole school:</b> each level of an integrated school and every special fund use the same checkbook, so numbers skip. ${go('series','More')}</li>
 <li><b>Every payment needs its OR or sales invoice.</b> The receipts should add up to the check amount plus any tax withheld.</li>
 <li>The portal also warns about the same OR from the same supplier used twice, receipts dated far from the check, and checks dated outside the quarter or before the cash advance arrived.</li>
 <li><b>Red</b> items must be fixed before you can submit. For <b>yellow</b> items, look at each one, then tick the box to submit.</li></ul>`},
@@ -263,11 +264,25 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <ol><li>A number on the quarter tells you something needs you. Open it and read the <b>remarks in red</b>.</li>
 <li>Fix the problem (in the Desk or in the portal). The Desk can change the quarter again once it is returned.</li>
 <li>Tick the box that you fixed it, and <b>resubmit</b>.</li></ol>`},
-{id:'funds',c:'school',w:'school',t:'Special funds (SIIF, SNED, SBFP, Additional MOOE and others)',k:'special fund siif sned sbfp feeding gulayan additional mooe program fund separate',b:`
+{id:'funds',c:'school',w:'school',t:'Special funds (SIIF, SNED, SBFP, DRRM, Additional MOOE and others)',k:'special fund siif sned sbfp feeding gulayan additional mooe drrm disaster program fund separate',b:`
 <ul><li>Each fund released to the school is liquidated on its own: its own checks, register, Liquidation Report, deadline and approval steps.</li>
 <li>On the school page: <b>Special funds → Record a special fund release</b>. In the Desk: choose <b>+ Record a special fund release…</b> in the quarter list.</li>
 <li>Checks entered while a fund is chosen are charged to it; <b>Charged to</b> on a check moves it.</li>
-<li>They share the school’s LBP account and checkbook, so the Check Disbursement Record, the bank reconciliation and the RAAF cover them all.</li></ul>`},
+<li>They share the school’s LBP account and <b>one series of check numbers</b>, so the Check Disbursement Record, the bank reconciliation and the RAAF cover them all. ${go('series','Why check numbers skip')}</li></ul>`},
+{id:'integrated',c:'school',w:['school','district','division'],t:'Integrated schools: Elementary, Junior High and Senior High',k:'integrated school elementary junior high school senior high school jhs shs levels separate liquidation one bank account one checkbook',b:`
+<p>The Elementary, Junior High and Senior High School MOOE are liquidated <b>separately</b>, but the school has <b>one bank account and one series of check numbers</b> for all of them.</p>
+<ul><li><b>One account</b> for the school (one School ID): the School Head and the AO enter every level.</li>
+<li>The regular quarter on your page is the <b>first level</b>. In the Desk, School setup → <b>Fund title</b> names it, for example “Elementary School MOOE”.</li>
+<li>Each quarter, record the other levels’ cash advances with <b>Special funds → Record a special fund release</b> (in the Desk: <b>+ Record a special fund release…</b>) and choose <b>Regular MOOE – Junior High School</b> or <b>Senior High School</b>. The title (for example “Junior High School MOOE 4th Quarter 2026”) and the quarter’s deadline are filled in for you.</li>
+<li>Each level has its own checks, register, Liquidation Report, Summary of Expenses, deadline and approval, and goes to the district and Division on its own.</li>
+<li>The bank reconciliation, the Check Disbursement Record and the RAAF are made <b>once for the whole school</b> each month, from the checks of every level.</li>
+<li>Choose <b>Charged to</b> on each check so it goes to the right level.</li></ul>`},
+{id:'series',c:'school',w:['school','district','division'],t:'One check series for several liquidations: why check numbers skip',k:'check numbers skip gap missing series checkbook shared integrated special fund drrm jhs shs same booklet',b:`
+<p>An integrated school (Elementary, JHS, SHS) or a school with special funds (DRRM, SIIF, SBFP and others) writes all its checks from <b>one checkbook</b>. So one liquidation’s check numbers jump over the numbers used by the others. That is normal.</p>
+<ul><li>A check number can be used only once, in any liquidation of the school. The portal stops a number used twice.</li>
+<li>Numbers between your checks that were used in another liquidation of the school are not reported missing. Enter the other liquidations too, so the portal can see them.</li>
+<li>A number nobody used is either a check not entered yet or a spoiled check: record a spoiled one as a <b>cancelled check</b> in the liquidation where it belongs.</li>
+<li>The RAAF counts the whole booklet each month, whatever liquidation each check belongs to.</li></ul>`},
 {id:'request',c:'school',w:'school',t:'Request for cash advance and the approved papers',k:'request letter ors dv jev aip programmed expenditures approved papers lddap scan release',b:`
 <ol><li>In the Desk, open <b>Liquidation &amp; cash advance</b> and switch to <b>Request for cash advance</b>.</li>
 <li>List the programmed expenditures from the approved AIP. <b>Start from the usual MOOE list</b>, or copy last quarter’s list and change the amounts.</li>
@@ -302,7 +317,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <li>Its pages: <b>Checks issued</b> (enter checks), <b>Forms per check</b>, <b>Liquidation &amp; cash advance</b> (quarterly forms and the request), <b>Monthly reports</b>, <b>School setup &amp; rules</b>, and this <b>Help</b>.</li>
 <li>Everything is <b>saved to the portal automatically</b>. Look for <b>All changes saved</b> under the <b>Back to the portal</b> button.</li>
 <li>Your school name, School Head, district bookkeeper and Division signatories come from the portal and cannot be changed in the Desk.</li>
-<li>The Desk shows its version next to the school’s name (for example <b>Desk v36</b>).</li></ul>`},
+<li>The Desk shows its version next to the school’s name (for example <b>Desk v37</b>).</li></ul>`},
 {id:'desk-newcheck',c:'desk',w:'school',t:'Enter a check',k:'new check encode add payee nature of expense purpose items unit qty quantity unit cost total tax withheld check amount invoice OR number date',b:`
 <ol><li>On <b>Checks issued</b>, tap <b>New check</b>.</li>
 <li>Type the <b>check number</b> and <b>check date</b>, the <b>payee</b>, and choose the <b>nature of expense</b> (office supplies, electricity, travel, repairs and so on). The nature decides which forms the check needs.</li>
@@ -496,6 +511,8 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <p>In the Desk, <b>School setup &amp; rules</b>. The school’s name, the School Head, the SDS and the district bookkeeper come from the portal; ask your district or the Division to change those.</p>`},
 {id:'f-phone',c:'faq',w:'all',t:'Can I use my phone?',k:'phone cellphone mobile android iphone',b:`
 <p>Yes, for signing in, encoding, photos and checking. Print from a computer with Chrome.</p>`},
+{id:'f-skip',c:'faq',w:['school','district'],t:'Our check numbers skip. Is that a problem?',k:'check numbers skip gap jump missing integrated special fund drrm',b:`
+<p>Not if the skipped numbers were used by another liquidation of the school: another level of an integrated school, or a special fund such as DRRM. They share one checkbook. Enter those liquidations too, and record spoiled checks as cancelled. ${go('series','More')}</p>`},
 {id:'f-cancel',c:'faq',w:'school',t:'How do I record a spoiled or cancelled check?',k:'spoiled cancelled void check gap',b:`
 <p>Add it with its number and tick <b>Cancelled check</b> (in the portal: Paid by → Cancelled / spoiled check). It keeps the numbers complete and carries no amount.</p>`},
 {id:'f-delete',c:'faq',w:'school',t:'How do I remove a check I entered by mistake?',k:'delete remove check mistake',b:`
@@ -506,7 +523,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <p>Your school, your district and the Division. Other schools cannot see it.</p>`},
 {id:'f-rules',c:'faq',w:'all',t:'The district or Accounting told us something different from the Help. Who wins?',k:'rules different instruction accounting district official policy',b:`
 <p>Follow your district and the Accounting Unit. The portal is a Division of Aklan pilot; its rules follow the Division training of October 2026 and can be changed by the Division. Tell the developer through the Support page so the portal can be updated.</p>`},
-{id:'f-version',c:'faq',w:'all',t:'What does “Desk v36” mean?',k:'version desk v36 update new',b:`
+{id:'f-version',c:'faq',w:'all',t:'What does “Desk v37” mean?',k:'version desk v37 v36 update new',b:`
 <p>It is the version of the Liquidation Desk. Updates do not change what you already encoded; older checks keep their forms unless you choose to apply a new rule to them.</p>`},
 {id:'f-old-rules',c:'faq',w:'school',t:'An older check shows “Apply these rules to this check”. Should I click it?',k:'apply these rules older check new rules update',b:`
 <p>Only if you want that check to follow the newer rules (for example the PO and IAR for furniture and equipment repairs, and the PR grouped by account code). If the check was already signed and submitted, leave it.</p>`},
@@ -578,7 +595,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <dt>Non-IU</dt><dd>A school that is not an Implementing Unit: its MOOE comes as a cash advance and is liquidated.</dd></dl>`}
 ]}
 /* synonyms: a search word also finds these (English, Filipino, Akeanon) */
-const HELP_SYN={password:['sign in code','sign in'],passwd:['password'],login:['sign in'],signin:['sign in'],resibo:['or','receipt','invoice'],receipt:['or','invoice'],or:['receipt','invoice'],invoice:['or','receipt'],tseke:['check'],cheke:['check'],tsek:['check'],cheque:['check'],presyo:['price','cost'],kuryente:['electricity'],tubig:['water'],pasahe:['fare','travel'],pamasahe:['fare','travel'],guba:['repair'],kwarta:['cash advance','amount'],byahe:['travel'],biyahe:['travel'],lakbay:['travel'],seminar:['travel','training'],pirma:['sign','signatory','signature'],litrato:['photo'],picture:['photo'],pictures:['photo'],larawan:['photo'],kuha:['photo'],scan:['photo','read'],ayos:['repair'],kumpuni:['repair'],sira:['repair'],gamit:['supplies'],labor:['labor','workers'],trabahador:['labor'],manggagawa:['labor'],sweldo:['labor','wage','payroll'],janitor:['janitorial'],utility:['bills','electricity','janitorial'],load:['mobile'],cellphone:['mobile','phone'],cp:['mobile','phone'],paano:[],pano:[],ibalik:['returned'],balik:['returned'],mali:['wrong','mistake'],tanggal:['delete','remove'],burahin:['delete'],petsa:['date','dates'],linggo:['sunday'],printer:['repair','equipment','print'],pow:['program of works'],aoq:['abstract'],rfq:['canvass'],brs:['bank reconciliation'],soe:['summary of expenses'],lr:['liquidation report'],ca:['cash advance'],ada:['cash advance'],code:['account code','sign in code'],codes:['account code'],uacs:['account code'],excel:['excel','xlsx'],offline:['offline','no internet'],internet:['internet']};
+const HELP_SYN={password:['sign in code','sign in'],passwd:['password'],login:['sign in'],signin:['sign in'],resibo:['or','receipt','invoice'],receipt:['or','invoice'],or:['receipt','invoice'],invoice:['or','receipt'],tseke:['check'],cheke:['check'],tsek:['check'],cheque:['check'],presyo:['price','cost'],kuryente:['electricity'],tubig:['water'],pasahe:['fare','travel'],pamasahe:['fare','travel'],guba:['repair'],kwarta:['cash advance','amount'],byahe:['travel'],biyahe:['travel'],lakbay:['travel'],seminar:['travel','training'],pirma:['sign','signatory','signature'],litrato:['photo'],picture:['photo'],pictures:['photo'],larawan:['photo'],kuha:['photo'],scan:['photo','read'],ayos:['repair'],kumpuni:['repair'],sira:['repair'],gamit:['supplies'],labor:['labor','workers'],trabahador:['labor'],manggagawa:['labor'],sweldo:['labor','wage','payroll'],janitor:['janitorial'],utility:['bills','electricity','janitorial'],load:['mobile'],cellphone:['mobile','phone'],cp:['mobile','phone'],paano:[],pano:[],ibalik:['returned'],balik:['returned'],mali:['wrong','mistake'],tanggal:['delete','remove'],burahin:['delete'],petsa:['date','dates'],linggo:['sunday'],printer:['repair','equipment','print'],pow:['program of works'],aoq:['abstract'],rfq:['canvass'],brs:['bank reconciliation'],soe:['summary of expenses'],lr:['liquidation report'],ca:['cash advance'],jhs:['junior high'],shs:['senior high'],elementary:['elementary','integrated'],drrm:['drrm','special fund'],ada:['cash advance'],code:['account code','sign in code'],codes:['account code'],uacs:['account code'],excel:['excel','xlsx'],offline:['offline','no internet'],internet:['internet']};
 const HELP_STOP=new Set(['the','a','an','to','of','in','on','for','and','how','do','does','i','my','is','are','what','can','where','when','why','ko','ang','sa','ng','mga','ba','po','yung','na','si','ni','ano','saan','paano','pano','kung','it','at']);
 function hpNorm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim()}
 function hpStrip(h){return String(h||'').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&[a-z]+;/g,' ')}
@@ -767,7 +784,7 @@ function audit(D){const E=[],W=[],by={},add=(c,t,k)=>{(k==='e'?E:W).push((c?'Che
  if(books.length)mine.forEach(c=>{const n=num(c);if(n&&!books.some(([f,t])=>n>=f&&n<=t))add(c,'not in a registered checkbook','w')});
  const used=new Set(mine.concat(others).map(num).filter(Boolean)),ns=mine.map(num).filter(Boolean).sort((a,b)=>a-b);
  if(ns.length>1&&ns[ns.length-1]-ns[0]<500){const miss=[];for(let n=ns[0];n<ns[ns.length-1];n++)if(!used.has(n))miss.push(n);
-  if(miss.length)add(null,'Check No'+(miss.length>1?'s. ':'. ')+miss.slice(0,8).join(', ')+(miss.length>8?' and '+(miss.length-8)+' more':'')+' '+(miss.length>1?'are':'is')+' missing between the checks of this liquidation. If spoiled, record '+(miss.length>1?'them':'it')+' as a cancelled check.','w')}
+  if(miss.length)add(null,'Check No'+(miss.length>1?'s. ':'. ')+miss.slice(0,8).join(', ')+(miss.length>8?' and '+(miss.length-8)+' more':'')+' '+(miss.length>1?'are':'is')+' missing between the checks of this liquidation. The school has one series of check numbers for all its liquidations (each level of an integrated school, special funds), so '+(miss.length>1?'they':'it')+' may belong to one not entered yet. If spoiled, record '+(miss.length>1?'them':'it')+' as a cancelled check.','w')}
  const ors={};(D.others||[]).forEach(o=>(o.receipts||[]).forEach(([n,sup])=>{if(n)ors[nno(n)+'|'+String(sup||'').trim().toLowerCase()]=pLabel(o.period)}));
  const q=(S.openP||S.q||'').slice(0,7),qs=q?q.slice(0,4)+'-'+String((+q.slice(6)-1)*3+1).padStart(2,'0')+'-01':'',qe=q?(()=>{const m=(+q.slice(6))*3;return q.slice(0,4)+'-'+String(m).padStart(2,'0')+'-'+new Date(+q.slice(0,4),m,0).getDate()})():'',today=todayStr();
  D.checks.forEach(c=>{if(c.mode==='Cancelled')return;
@@ -789,7 +806,7 @@ const qChips=()=>{const W=B.wait||{},all=B.quarters,show=all.filter((q,i)=>i<5||
 const distName=id=>id?((B.districts.find(d=>d.id===id)||{}).name||id):'Division unit';
 const isUnitOffice=()=>S.D&&S.D.school&&S.D.school.type==='unit';
 const isFundP=()=>!!(S.D&&S.D.sub&&S.D.sub.fund);
-const FUNDK={addmooe:'Additional MOOE',siif:'SIIF – School Innovation and Improvement Fund',sned:'SNED – Special Needs Education Program',sbfp:'SBFP – School-Based Feeding Program',gpp:'Gulayan sa Paaralan Program',other:'Other program fund'};
+const FUNDK={addmooe:'Additional MOOE',elem:'Regular MOOE – Elementary (integrated school)',jhs:'Regular MOOE – Junior High School (integrated school)',shs:'Regular MOOE – Senior High School (integrated school)',drrm:'DRRM – Disaster Risk Reduction and Management fund',siif:'SIIF – School Innovation and Improvement Fund',sned:'SNED – Special Needs Education Program',sbfp:'SBFP – School-Based Feeding Program',gpp:'Gulayan sa Paaralan Program',other:'Other program fund'};
 const myOffice=()=>B.schools.find(o=>o.id===B.me.school)||{};
 const routeName=sc=>sc&&sc.type==='unit'?'Division Accounting':distName(sc&&sc.district);
 
@@ -800,7 +817,7 @@ function detail(){const D=S.D,x=D.sub,lv=B.me.level,mineEdit=lv==='school'&&(x.s
   <td class="o6 w1"><div class="acts">${c.mode==='Cancelled'?'':`<button class="btn sm" data-rcp="${esc(c.id)}">Receipts (${(c.receipts||[]).length})</button><button class="btn sm" data-photos="${esc(c.no)}">Photos (${pc(c.no)})</button>`}${quick?`<button class="btn sm link" data-del="${esc(c.id)}" aria-label="Delete check">Delete</button>`:''}</div></td></tr>`).join('');
  const U=D.school.type==='unit',FD=!!x.fund;
  return `${lv!=='school'||U?`<button class="btn link" id="back">← Back to the list</button>`:FD?`<button class="btn link" id="back">← Back to ${esc(qLabel(S.q))}</button>`:''}
- <div class="row" style="justify-content:space-between;align-items:flex-start;margin:6px 0 4px"><div class="ohead">${D.school.logo?`<img src="${D.school.logo}" alt="${esc(D.school.name)} logo">`:''}<div><h1>${esc(U&&x.title?x.title:D.school.name)}</h1><p class="sub" style="margin:0">${U?esc(D.school.name)+' · Division unit':esc(distName(D.school.district))} · ${FD?'<b>Special fund: '+esc(x.title||FUNDK[x.kind]||'')+'</b>':qLabel(S.q)} · ${U?'Head':'School Head'}: ${esc(D.school.head)}</p></div></div>${pill(x.status)}</div>
+ <div class="row" style="justify-content:space-between;align-items:flex-start;margin:6px 0 4px"><div class="ohead">${D.school.logo?`<img src="${D.school.logo}" alt="${esc(D.school.name)} logo">`:''}<div><h1>${esc(U&&x.title?x.title:D.school.name)}</h1><p class="sub" style="margin:0">${U?esc(D.school.name)+' · Division unit':esc(distName(D.school.district))} · ${FD?'<b>'+(/^(elem|jhs|shs)$/.test(x.kind||'')?'':'Special fund: ')+esc(x.title||FUNDK[x.kind]||'')+'</b>':qLabel(S.q)} · ${U?'Head':'School Head'}: ${esc(D.school.head)}</p></div></div>${pill(x.status)}</div>
  ${D.siblings&&D.siblings.length>1?`<div class="row" style="margin-top:10px"><span class="muted small">This quarter has ${D.siblings.length} liquidations because of a turnover:</span><div class="chips">${D.siblings.map(g=>`<button class="chip ${g.period===(S.openP||S.q)?'on':''}" data-sib="${esc(g.period)}">${esc(pLabel(g.period))}${g.officer?' · '+esc(g.officer):''}</button>`).join('')}</div></div>`:''}
  <div class="card" style="margin:14px 0">${steps(x.status,U)}</div>${U?'':dueNote(S.q,x.status,FD?(x.due||''):undefined)}
  ${x.turnover?`<div class="note info" style="margin-bottom:14px"><b>Turnover on ${dshort(x.turnover)}</b>Payments up to that day stay here under ${esc(x.officer||'the outgoing officer')}. The balance of ₱${peso(x.turnoverAmt)} was turned over to the incoming officer.</div>`:''}
