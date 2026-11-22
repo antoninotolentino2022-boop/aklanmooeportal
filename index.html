@@ -153,7 +153,7 @@ const TYPE_CODE={checks:'5020302000',supplies:'5020301000',othersup:'5020399000'
 const ST={draft:'Not yet submitted',submitted:'Waiting for district check',returned:'Returned to school',district_ok:'Waiting for division',verified:'Verified – liquidated'};
 /* "Show password" under a password box: what was typed can be checked before signing in (version 30) */
 document.addEventListener('change',e=>{const t=e.target;if(!t||!t.matches||!t.matches('[data-showpw]'))return;(t.closest('form')||document).querySelectorAll('input[autocomplete$="password"]').forEach(i=>{i.type=t.checked?'text':'password'})});
-const STAGES=['Check','Receipt','Items delivered','Before','During','After','Activity','Other'],STAGEL={Check:'Check (issued)',Receipt:'Official receipt / invoice'},stL=k=>STAGEL[k]||k;
+const STAGES=['Check','Receipt','Items delivered','Distribution','Before','During','After','Activity','Other'],STAGEL={Check:'Check (issued)',Receipt:'Official receipt / invoice'},stL=k=>STAGEL[k]||k;
 const ORD=['1st','2nd','3rd','4th'];
 const HEADS_ROLE=['School Head','Head of office'];
 let B=null,S={viewAs:'',q:'',open:null,openP:'',office:false,sfilter:'all',dfilter:'all',tab:'schools',D:null,L:null,photoCheck:null,imgs:{}};
@@ -251,10 +251,12 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <li><b>Every payment needs its OR or sales invoice.</b> The receipts should add up to the check amount plus any tax withheld.</li>
 <li>The portal also warns about the same OR from the same supplier used twice, receipts dated far from the check, and checks dated outside the quarter or before the cash advance arrived.</li>
 <li><b>Red</b> items must be fixed before you can submit. For <b>yellow</b> items, look at each one, then tick the box to submit.</li></ul>`},
-{id:'photos',c:'school',w:['school','unit'],t:'Photos of the check, receipts and items',k:'photo picture litrato kuha camera scan upload documentation before during after delivered caption',b:`
+{id:'photos',c:'school',w:['school','unit'],t:'Photos of the check, receipts and items',k:'photo picture litrato kuha camera scan upload documentation before during after delivered distribution caption edit also paid',b:`
 <ol><li>In the Desk, open the check and tap <b>📷 Photos</b> (beside <b>Open the forms</b>). In the portal, click <b>Photos</b> beside the check.</li>
-<li><b>Take a photo</b> (on a phone it opens the camera) or <b>Choose photos or scans</b>. Pick what it is: the check, a receipt, before, during, after, items delivered.</li>
-<li>The caption is suggested from the check (the items and the supplier, or the purpose). Click another suggestion or type your own.</li></ol>
+<li><b>Take a photo</b> (on a phone it opens the camera) or <b>Choose photos or scans</b>. Pick what it is: the check, a receipt, items delivered, distribution, before, during, after, activity.</li>
+<li>The caption is written for you in full: what is shown, the check number and date, the OR/invoice numbers and the fund and quarter, e.g. “Distribution of bond paper and ballpens purchased from ABC Store under Check No. 0001940110 dated October 15, 2026, OR/Invoice No. 4521, charged to MOOE 4th Quarter 2026.” Click another suggestion or type your own.</li>
+<li>Bought with more than one check (a repair or a distribution)? Tick the other checks under <b>Also paid by</b>; the caption names them all.</li>
+<li>To fix a saved caption, tap <b>Edit caption</b> under the photo.</li></ol>
 <p>Photos are printed after the check’s forms: the check and receipts two to a page, the others four to a page, certified by the School Head. If you correct a check number later, the portal points out the photos left under the old number so you can move them.</p>`},
 {id:'submit',c:'school',w:['school','unit'],t:'Submit the quarter',k:'submit send pasa forward district lock balance zero',b:`
 <ol><li>Make sure the balance is zero (or the rest is accounted for) and the red items in <b>Check numbers and receipts</b> are fixed.</li>
@@ -317,7 +319,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <li>Its pages: <b>Checks issued</b> (enter checks), <b>Forms per check</b>, <b>Liquidation &amp; cash advance</b> (quarterly forms and the request), <b>Monthly reports</b>, <b>School setup &amp; rules</b>, and this <b>Help</b>.</li>
 <li>Everything is <b>saved to the portal automatically</b>. Look for <b>All changes saved</b> under the <b>Back to the portal</b> button.</li>
 <li>Your school name, School Head, district bookkeeper and Division signatories come from the portal and cannot be changed in the Desk.</li>
-<li>The Desk shows its version next to the school’s name (for example <b>Desk v37</b>).</li></ul>`},
+<li>The Desk shows its version next to the school’s name (for example <b>Desk v39</b>).</li></ul>`},
 {id:'desk-newcheck',c:'desk',w:'school',t:'Enter a check',k:'new check encode add payee nature of expense purpose items unit qty quantity unit cost total tax withheld check amount invoice OR number date',b:`
 <ol><li>On <b>Checks issued</b>, tap <b>New check</b>.</li>
 <li>Type the <b>check number</b> and <b>check date</b>, the <b>payee</b>, and choose the <b>nature of expense</b> (office supplies, electricity, travel, repairs and so on). The nature decides which forms the check needs.</li>
@@ -523,7 +525,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <p>Your school, your district and the Division. Other schools cannot see it.</p>`},
 {id:'f-rules',c:'faq',w:'all',t:'The district or Accounting told us something different from the Help. Who wins?',k:'rules different instruction accounting district official policy',b:`
 <p>Follow your district and the Accounting Unit. The portal is a Division of Aklan pilot; its rules follow the Division training of October 2026 and can be changed by the Division. Tell the developer through the Support page so the portal can be updated.</p>`},
-{id:'f-version',c:'faq',w:'all',t:'What does “Desk v37” mean?',k:'version desk v37 v36 update new',b:`
+{id:'f-version',c:'faq',w:'all',t:'What does “Desk v39” mean?',k:'version desk v37 v36 update new',b:`
 <p>It is the version of the Liquidation Desk. Updates do not change what you already encoded; older checks keep their forms unless you choose to apply a new rule to them.</p>`},
 {id:'f-old-rules',c:'faq',w:'school',t:'An older check shows “Apply these rules to this check”. Should I click it?',k:'apply these rules older check new rules update',b:`
 <p>Only if you want that check to follow the newer rules (for example the PO and IAR for furniture and equipment repairs, and the PR grouped by account code). If the check was already signed and submitted, leave it.</p>`},
@@ -1020,31 +1022,49 @@ function phUnit(u,q){u=String(u||'').trim();if(!u||q===1||!/^[a-z]+$/i.test(u)||
 const phItem=([d,q,u])=>{const n=Math.round((+q||0)*100)/100;return d+(n?` (${n} ${phUnit(u,n)})`.replace(' )',')'):'')};
 function phItems(c){const h=phHint(c.no);return h?(h.items||[]).map(phItem):[]}
 /* version 29: photos of the check itself and of each receipt, captioned from the check and its receipts */
-const phRcpt=(c,r)=>`${r.no||'Receipt'}${r.date?' dated '+dshort(r.date):''} – ${r.sup||c.payee} – ₱${peso(r.amount)}`;
+const phRcpt=(c,r)=>`${phRef(r.no)||'Receipt'}${r.date?' dated '+dlong(r.date):''} from ${r.sup||c.payee}, ₱${peso(r.amount)}, paid under Check No. ${c.no}, charged to ${phFundP()}.`;
 const phRcpts=c=>(c.receipts||[]).filter(r=>r.no||r.amount);
-function phCaption(c,stage,i){const h=phHint(c.no)||{},pur=String(h.purpose||c.nature||'').trim(),who=String(h.payee||c.payee||'').trim(),it=phItems(c),
-  list=it.length>3?it.slice(0,3).join('; ')+' and '+(it.length-3)+' more item'+(it.length>4?'s':''):it.join('; ');
- if(stage==='Check')return `${c.mode&&c.mode!=='Check'?c.mode+' ref.':'Check'} No. ${c.no} dated ${dshort(c.date)} – ${c.payee} – ₱${peso(c.amount)}`;
- if(stage==='Receipt'){const R=phRcpts(c);return R.length?phRcpt(c,R[Math.min(i||0,R.length-1)]):'Official receipt – '+(who||'')}
- if(stage==='Items delivered')return list?list+(who?' – from '+who:''):[pur,who].filter(Boolean).join(' – ');
- return pur||list||who}
+/* version 39: full-sentence captions that name the fund and quarter, the check(s) and the receipts; "also" = other checks that paid for the same thing */
+const phAndP=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1];
+const phRef=t=>{t=String(t||'').trim();return !t?'':/^[0-9]/.test(t)?'OR/Invoice No. '+t:t};
+function phFundP(){const x=S.D&&S.D.sub||{};return x.fund?(String(x.title||'').trim()||'special fund'):'MOOE '+qLabel(String(S.q||'').slice(0,7))}
+function phChkP(c,also){const L=[c,...(also||[])].filter(x=>x&&x.no);return (L.length>1?'Check Nos. ':'Check No. ')+phAndP(L.map(x=>x.no))+(L.length===1&&c.date?' dated '+dlong(c.date):'')}
+function phRcsP(c,also){const u=[...new Set([c,...(also||[])].flatMap(x=>phRcpts(x).map(r=>String(r.no||'').trim()).filter(Boolean)))];if(!u.length)return '';
+ return u.length===1?phRef(u[0]):(u.every(t=>/^[0-9]/.test(t))?'OR/Invoice Nos. '+phAndP(u):phAndP(u.map(phRef)))}
+const MONF=['January','February','March','April','May','June','July','August','September','October','November','December'],dlong=x=>{if(!x)return '';const [y,m,d]=String(x).split('-');return MONF[+m-1]+' '+(+d)+', '+y};
+const phLowP=t=>/^[A-Z][a-z]/.test(t)?t[0].toLowerCase()+t.slice(1):t;
+function phCaption(c,stage,i,also){const h=phHint(c.no)||{},who=String(h.payee||c.payee||'').trim(),it=[...new Set([c,...(also||[])].flatMap(phItems))],
+  list=it.length>3?it.slice(0,3).join('; ')+' and '+(it.length-3)+' more item'+(it.length>4?'s':''):phAndP(it),pur=String(h.purpose||c.nature||'').trim()||list,
+  F=phFundP(),ck=phChkP(c,also),rc=phRcsP(c,also),from=who?' from '+who:'';
+ if(stage==='Check')return `${c.mode&&c.mode!=='Check'?c.mode+' ref.':'Check'} No. ${c.no} dated ${dlong(c.date)}, payable to ${c.payee}, ₱${peso(c.amount)}, charged to ${F}.`;
+ if(stage==='Receipt'){const R=phRcpts(c);return R.length?phRcpt(c,R[Math.min(i||0,R.length-1)]):'Official receipt'+from+', paid under '+ck+', charged to '+F+'.'}
+ if(stage==='Items delivered')return 'Delivery of '+(list||pur)+from+(rc?', '+rc:'')+', paid under '+ck+', charged to '+F+'.';
+ if(stage==='Distribution')return 'Distribution of '+(list||pur)+' purchased'+from+' under '+ck+(rc?', '+rc:'')+', charged to '+F+'.';
+ const tail=', charged to '+F+', '+ck+(rc?', '+rc:'')+'.';
+ if(stage==='Before')return 'BEFORE: '+pur+tail;
+ if(stage==='During')return 'DURING: On-going '+phLowP(pur)+tail;
+ if(stage==='After')return 'AFTER: Completed '+phLowP(pur)+tail;
+ if(stage==='Activity')return pur+(c.date?' ('+dlong(c.date)+')':'')+tail;
+ return pur+tail}
 /* what to photograph next for this check: the check, then each receipt, then what its kind of expense calls for */
 const phList=c=>(S.D&&S.D.photos||[]).filter(p=>p.checkNo===c.no);
-const phStage=c=>{const L=phList(c),n=k=>L.filter(p=>p.stage===k).length,h=phHint(c.no);if(c.mode!=='Cash'&&!n('Check'))return 'Check';if(n('Receipt')<Math.max(1,phRcpts(c).length))return 'Receipt';return (h&&PH_STAGE[h.type])||'Before'};
+const phStage=c=>{const L=phList(c),n=k=>L.filter(p=>p.stage===k).length,h=phHint(c.no);if(c.mode!=='Cash'&&!n('Check'))return 'Check';if(n('Receipt')<Math.max(1,phRcpts(c).length))return 'Receipt';const st=(h&&PH_STAGE[h.type])||'Before';return st==='Items delivered'&&n('Items delivered')?'Distribution':st};
 const phRi=c=>phList(c).filter(p=>p.stage==='Receipt').length;
-function phSugs(c,stage){if(stage==='Receipt')return phRcpts(c).map(r=>phRcpt(c,r));if(stage==='Check')return [phCaption(c,'Check')];const out=[];[phCaption(c,'Items delivered'),phCaption(c,'Activity'),...phItems(c)].forEach(t=>{t=String(t||'').trim();if(t&&!out.includes(t))out.push(t)});return out.slice(0,10)}
+const phPeersP=c=>(S.D&&S.D.checks||[]).filter(k=>k.no&&k.no!==c.no&&k.mode!=='Cancelled'),phAlso=c=>phPeersP(c).filter(k=>(S.phAlso||[]).includes(k.no));
+function phSugs(c,stage){if(stage==='Receipt')return phRcpts(c).map(r=>phRcpt(c,r));if(stage==='Check')return [phCaption(c,'Check')];const out=[];[phCaption(c,stage,0,phAlso(c)),phCaption(c,'Items delivered',0,phAlso(c)),String((phHint(c.no)||{}).purpose||c.nature||''),...phItems(c)].forEach(t=>{t=String(t||'').trim();if(t&&!out.includes(t))out.push(t)});return out.slice(0,10)}
 const phDate=(c,stage)=>(stage==='Items delivered'||stage==='Receipt')&&(c.receipts||[]).some(r=>r.date)?(c.receipts.find(r=>r.date).date):(c.date||'');
 function phSugHtml(c,stage){const L=phSugs(c,stage);return L.length?`<span class="small muted">Suggested captions (click one):</span>${L.map((t,i)=>`<button type="button" class="chip" data-phs="${i}" title="${esc(t)}">${esc(t.length>70?t.slice(0,68)+'…':t)}</button>`).join('')}`:''}
 /* the hints come from the Desk; they arrive after the panel is drawn, so only the caption box, stage and suggestions are updated (a re-draw would drop the chosen files) */
 function phFill(){const c=S.D&&S.D.checks.find(k=>k.no===S.photoCheck);if(!c)return;const l=$('#ph-label'),st=$('#ph-stage'),dt=$('#ph-date'),sg=$('#ph-sug');if(!l)return;
- if(st&&st.dataset.auto==='1')st.value=phStage(c);const k=st?st.value:'Before';if(l.dataset.auto==='1')l.value=phCaption(c,k,phRi(c));if(dt&&dt.dataset.auto==='1')dt.value=phDate(c,k);
+ if(st&&st.dataset.auto==='1')st.value=phStage(c);const k=st?st.value:'Before';if(l.dataset.auto==='1')l.value=phCaption(c,k,phRi(c),phAlso(c));const ab=$('#ph-also');if(ab)ab.style.display=['Check','Receipt'].includes(k)||!phPeersP(c).length?'none':'';if(dt&&dt.dataset.auto==='1')dt.value=phDate(c,k);
  if(sg){sg.innerHTML=phSugHtml(c,k);sg.querySelectorAll('[data-phs]').forEach(b=>b.onclick=()=>{l.value=phSugs(c,k)[+b.dataset.phs]||'';l.dataset.auto='0';l.focus()})}}
 function loadHints(){const sc=S.D&&S.D.school;if(!sc||!sc.desk||S.PHk===sc.id)return;S.PHk=sc.id;call('photoHints',{school:sc.id}).then(r=>{S.PH=r||{};phFill()}).catch(()=>{S.PHk=''})}
 function photoPanel(){const no=S.photoCheck,c=S.D.checks.find(k=>k.no===no)||{},list=S.D.photos.filter(p=>p.checkNo===no),canUp=B.me.level==='school'&&S.D.sub.status!=='verified',stray=!S.D.checks.some(k=>k.no===no),st0=phStage(c);
  return `<div class="card stack" style="margin-bottom:16px" id="pp"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Photos – Check ${esc(no)} · ${esc(c.payee||'')}</h2><div class="row"><button class="btn" id="printPh" ${list.length?'':'disabled'}>Print this check’s photos</button><button class="btn" id="printPhAll" ${S.D.photos.length?'':'disabled'}>Print all photos of this liquidation</button><button class="btn link" id="closePh">Close</button></div></div>
- ${list.length?`<div class="thumbs">${list.map(p=>`<div class="thumb"><div class="im" data-img="${esc(p.id)}" style="${S.imgs[p.id]?`background-image:url('${S.imgs[p.id]}')`:''}">${S.imgs[p.id]?'':'Loading…'}</div><div class="c"><b>${esc(stL(p.stage))}</b> · ${p.label?esc(p.label):`<i class="muted" title="No caption was typed; this one is made from the check and is used when printing">${esc(phCaption(c,p.stage))}</i>`}<br><span class="muted">${dshort(p.date)}</span>${canUp?` · <button class="btn link sm" data-delph="${esc(p.id)}">Remove</button>`:''}</div></div>`).join('')}</div>`:'<p class="muted small" style="margin:0">No photos yet for this check.</p>'}
+ ${list.length?`<div class="thumbs">${list.map(p=>`<div class="thumb"><div class="im" data-img="${esc(p.id)}" style="${S.imgs[p.id]?`background-image:url('${S.imgs[p.id]}')`:''}">${S.imgs[p.id]?'':'Loading…'}</div><div class="c"><b>${esc(stL(p.stage))}</b> · ${p.label?esc(p.label):`<i class="muted" title="No caption was typed; this one is made from the check and is used when printing">${esc(phCaption(c,p.stage))}</i>`}<br><span class="muted">${dshort(p.date)}</span>${canUp?` · <button class="btn link sm" data-edph="${esc(p.id)}">Edit caption</button> · <button class="btn link sm" data-delph="${esc(p.id)}">Remove</button>`:''}</div></div>`).join('')}</div>`:'<p class="muted small" style="margin:0">No photos yet for this check.</p>'}
  ${canUp&&stray&&list.length?`<div class="note info"><b>Check No. ${esc(no)} is not in this liquidation</b><div class="row" style="margin-top:6px"><label class="f" style="flex:1 1 220px">Move these photos to<select id="ph-move">${S.D.checks.filter(k=>k.mode!=='Cancelled').map(k=>`<option value="${esc(k.no)}">Check ${esc(k.no)} · ${esc(k.payee)}</option>`).join('')}</select></label><button class="btn" id="ph-mv" style="align-self:flex-end">Move photos</button></div></div>`:''}
- ${canUp&&!stray?`<div class="fgrid"><label class="f" style="grid-column:1/-1">What is shown (caption)<input id="ph-label" data-auto="1" value="${esc(phCaption(c,st0,phRi(c)))}" placeholder="e.g. Classroom ceiling, Room 3"></label><label class="f">What it is<select id="ph-stage" data-auto="1">${STAGES.map(s=>`<option value="${s}" ${s===st0?'selected':''}>${stL(s)}</option>`).join('')}</select></label><label class="f">Date taken<input id="ph-date" type="date" data-auto="1" value="${esc(phDate(c,st0))}"></label></div>
+ ${canUp&&!stray?`<div class="fgrid"><label class="f" style="grid-column:1/-1">What is shown (caption)<input id="ph-label" data-auto="1" value="${esc(phCaption(c,st0,phRi(c),phAlso(c)))}" placeholder="e.g. Classroom ceiling, Room 3"></label><label class="f">What it is<select id="ph-stage" data-auto="1">${STAGES.map(s=>`<option value="${s}" ${s===st0?'selected':''}>${stL(s)}</option>`).join('')}</select></label><label class="f">Date taken<input id="ph-date" type="date" data-auto="1" value="${esc(phDate(c,st0))}"></label></div>
+ <div class="chips" id="ph-also" style="align-items:center;${['Check','Receipt'].includes(st0)||!phPeersP(c).length?'display:none':''}"><span class="small muted">Also paid by:</span>${phPeersP(c).map(k=>`<label class="chip"><input type="checkbox" data-pha="${esc(k.no)}" ${(S.phAlso||[]).includes(k.no)?'checked':''}> Check ${esc(k.no)} · ${esc(k.payee||'')}</label>`).join('')}</div>
  <div class="chips" id="ph-sug" style="align-items:center">${phSugHtml(c,st0)}</div>
  <div class="row"><label class="btn primary" style="cursor:pointer">📷 Take a photo<input id="ph-cam" type="file" accept="image/${'*'}" capture="environment" hidden></label><label class="btn" style="cursor:pointer">🖼 Choose photos or scans<input id="ph-file" type="file" accept="image/${'*'}" multiple hidden></label><span class="small muted" id="upMsg">On a phone, “Take a photo” opens the camera. The photo is saved at once with the caption above.</span></div>`:''}</div>`}
 function resize(file,doc){return new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const m=doc?2000:1600,s=Math.min(1,m/Math.max(img.width,img.height)),cv=document.createElement('canvas');cv.width=Math.round(img.width*s);cv.height=Math.round(img.height*s);cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);res(cv.toDataURL('image/jpeg',doc?0.85:0.8))};img.onerror=()=>rej({error:'Could not read '+file.name});img.src=fr.result};fr.onerror=()=>rej({error:'Could not read '+file.name});fr.readAsDataURL(file)})}
@@ -1296,7 +1316,7 @@ function wire(){const D=S.D,lv=B.me.level;
  const rs=$('#reset');if(rs)rs.onclick=()=>{$('#resetWrap').innerHTML='<div class="row"><span class="small">Put the sample schools back as they were?</span><button class="btn warn" id="rsYes">Put back</button><button class="btn" id="rsNo">Cancel</button></div>';
   $('#rsNo').onclick=render;$('#rsYes').onclick=e=>busy(e.target,async()=>{await call('resetDemo');S.imgs={};toast('Sample data put back');await boot()})};
  if(!D||!S.open)return;const p={school:S.open,q:S.openP||S.q};
- document.querySelectorAll('[data-photos]').forEach(b=>b.onclick=()=>{S.photoCheck=b.dataset.photos;S.PHk='';render();$('#pp').scrollIntoView({behavior:'smooth',block:'start'})});
+ document.querySelectorAll('[data-photos]').forEach(b=>b.onclick=()=>{S.photoCheck=b.dataset.photos;S.phAlso=[];S.PHk='';render();$('#pp').scrollIntoView({behavior:'smooth',block:'start'})});
  const cp=$('#closePh');if(cp)cp.onclick=()=>{S.photoCheck=null;render()};
  const pp=$('#printPh');if(pp)pp.onclick=()=>busy(pp,()=>printPhotos(false));const ppa=$('#printPhAll');if(ppa)ppa.onclick=()=>busy(ppa,()=>printPhotos(true));
  ['ph-label','ph-date'].forEach(id=>{const e=$('#'+id);if(e)e.oninput=()=>{e.dataset.auto='0'}});const pst=$('#ph-stage');if(pst)pst.onchange=()=>{pst.dataset.auto='0';phFill()};
@@ -1306,6 +1326,8 @@ function wire(){const D=S.D,lv=B.me.level;
    await reload(files.length+' photo'+(files.length>1?'s':'')+' saved')}catch(e){showErr(e);document.querySelectorAll('#ph-cam,#ph-file').forEach(e=>e.disabled=false);$('#upMsg').textContent=''}}});
  const pmv=$('#ph-mv');if(pmv)pmv.onclick=()=>busy(pmv,async()=>{const to=$('#ph-move').value;if(!to)return;await call('movePhotos',{...p,from:S.photoCheck,to});S.photoCheck=to;await reload('Photos moved to Check No. '+to)});
  document.querySelectorAll('[data-delph]').forEach(b=>b.onclick=()=>busy(b,async()=>{await call('delPhoto',{id:b.dataset.delph});await reload('Photo removed')}));
+ document.querySelectorAll('[data-edph]').forEach(b=>b.onclick=()=>{const p=S.D.photos.find(x=>x.id===b.dataset.edph);if(!p)return;const c=S.D.checks.find(k=>k.no===p.checkNo)||{no:p.checkNo};const t=prompt('Caption for this photo:',p.label||phCaption(c,p.stage));if(t==null)return;busy(b,async()=>{await call('labelPhoto',{id:p.id,label:t.trim()});await reload('Caption saved')})});
+ document.querySelectorAll('[data-pha]').forEach(b=>b.onchange=()=>{const no=b.dataset.pha;S.phAlso=(S.phAlso||[]).filter(x=>x!==no);if(b.checked)S.phAlso.push(no);phFill()});
  /* special funds: open one, record a new release */
  document.querySelectorAll('[data-fopen]').forEach(t=>{const go=()=>{S.openP=t.dataset.fopen;S.panel='';S.photoCheck=null;S.rcpCheck=null;load();window.scrollTo(0,0)};t.onclick=go;t.onkeydown=e=>{if(e.key==='Enter')go()}});
  const nfo=$('#nf-open');if(nfo)nfo.onclick=()=>{S.newFund=true;render()};const nfn=$('#nf-no');if(nfn)nfn.onclick=()=>{S.newFund=false;render()};
@@ -1464,10 +1486,12 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
   const finish=then=>{closed=true;clearInterval(pinger);clearTimeout(timer);if(!ro)deskCall('deskPing',{school:sc.id,tab:DESK_TAB,leaving:1}).catch(()=>{});const w=$('#deskwrap');if(w)w.remove();document.querySelectorAll('.modal').forEach(m=>m.remove());document.body.style.overflow='';window.__desk=null;S.D=null;if(then)then();load()};
   /* photos and scans of a check, taken or chosen inside the Desk (version 29); saved in the portal, shown here and printed after the check's forms */
   const phSec=(doc,c,no)=>{const w=doc.defaultView,L=PHL.filter(p=>String(p.checkNo)===no),d=phD[no]||(phD[no]={}),k=d.k||w.phNext(c,L),ri=L.filter(p=>p.stage==='Receipt').length;
-   const cap=d.cap!=null?d.cap:w.phAuto(c,k,ri),dt=d.d||w.phDateD(c,k,ri);
+   const peers=w.phPeers?w.phPeers(c):[],also=peers.filter(x=>(d.also||[]).includes(x.id)),multi=!['Check','Receipt'].includes(k)&&peers.length;
+   const cap=d.cap!=null?d.cap:w.phAuto(c,k,ri,also),dt=d.d||w.phDateD(c,k,ri);
    return `<div class="section" id="pPhSec"><h3>Photos and scans of this check</h3><p class="note">Take or choose photos of the check, its receipts and the items. They are saved in the portal and printed after this check’s forms, each with its caption.</p>
-    ${L.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:8px 0">${L.map(p=>`<div style="border:1px solid var(--line,#ccc);border-radius:8px;padding:6px;font-size:12px;line-height:1.35"><img data-phid="${esc(p.id)}" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:4px;background:#eee;display:block;margin-bottom:4px"><b>${esc(w.phLab(p.stage))}</b> – ${esc(p.label||'caption made when printed')}${ro?'':`<br><button class="ghost" data-phx="${esc(p.id)}" style="padding:2px 6px;margin-top:4px">Remove</button>`}</div>`).join('')}</div>`:''}
+    ${L.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:8px 0">${L.map(p=>`<div style="border:1px solid var(--line,#ccc);border-radius:8px;padding:6px;font-size:12px;line-height:1.35"><img data-phid="${esc(p.id)}" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:4px;background:#eee;display:block;margin-bottom:4px"><b>${esc(w.phLab(p.stage))}</b> – ${esc(p.label||'caption made when printed')}${ro?'':`<br><button class="ghost" data-phe="${esc(p.id)}" style="padding:2px 6px;margin-top:4px">Edit caption</button> <button class="ghost" data-phx="${esc(p.id)}" style="padding:2px 6px;margin-top:4px">Remove</button>`}</div>`).join('')}</div>`:''}
     ${ro?'':`<div class="grid"><label>What it is<select id="pPhK">${w.phKinds().map(([v,l])=>`<option value="${v}" ${v===k?'selected':''}>${esc(l)}</option>`).join('')}</select></label><label>Date taken<input type="date" id="pPhD" value="${esc(dt)}"></label><label class="span2">Caption<input id="pPhC" value="${esc(cap)}"></label></div>
+    ${multi?`<div class="docpick" style="margin-top:6px"><span class="note" style="margin:0 6px 0 0">Also paid by:</span>${peers.map(x=>`<label><input type="checkbox" data-pha="${esc(x.id)}" ${(d.also||[]).includes(x.id)?'checked':''}>Check ${esc(x.no)} · ${esc(x.payee||'')}</label>`).join('')}</div>`:''}
     <div class="docpick" style="margin-top:6px">${w.phSugsD(c,k).map((t,i)=>`<label data-phs="${i}" style="cursor:pointer" title="${esc(t)}">${esc(t.length>60?t.slice(0,58)+'…':t)}</label>`).join('')}</div>
     <div class="row" style="margin-top:10px"><label class="filebtn" style="background:#1f4e8c;color:#fff;border-color:#1f4e8c">📷 Take a photo<input type="file" id="pPhCam" accept="image/${'*'}" capture="environment" hidden></label><label class="filebtn">🖼 Choose photos or scans<input type="file" id="pPhFile" accept="image/${'*'}" multiple hidden></label><span class="note" id="pPhMsg" style="margin:0">On a phone, “Take a photo” opens the camera.</span></div>`}
     <p class="note"><a href="#" id="pPhPortal">Open these photos in the portal</a> to move them to another check or print them on their own.</p></div>`};
@@ -1475,7 +1499,9 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
   const phWire=(doc,c,no)=>{const $d=id=>doc.getElementById(id),d=phD[no]||(phD[no]={}),w=doc.defaultView;
    const kk=$d('pPhK');if(kk)kk.onchange=()=>{d.k=kk.value;if(!d.capT)d.cap=null;if(!d.dT)d.d='';phRedo(doc,c,no)};
    const cc=$d('pPhC');if(cc)cc.oninput=()=>{d.cap=cc.value;d.capT=true};const dd=$d('pPhD');if(dd)dd.onchange=()=>{d.d=dd.value;d.dT=true};
-   doc.querySelectorAll('#pPhSec [data-phs]').forEach(b=>b.onclick=()=>{const L=w.phSugsD(c,kk?kk.value:'Check');d.cap=L[+b.dataset.phs]||'';d.capT=true;if(cc)cc.value=d.cap});
+   doc.querySelectorAll('#pPhSec [data-phs]').forEach(b=>b.onclick=()=>{const L=w.phSugsD(c,kk?kk.value:'Check',(w.phPeers?w.phPeers(c):[]).filter(x=>(d.also||[]).includes(x.id)));d.cap=L[+b.dataset.phs]||'';d.capT=true;if(cc)cc.value=d.cap});
+   doc.querySelectorAll('#pPhSec [data-pha]').forEach(b=>b.onchange=()=>{const id=b.dataset.pha;d.also=(d.also||[]).filter(x=>x!==id);if(b.checked)d.also.push(id);if(!d.capT)d.cap=null;phRedo(doc,c,no)});
+   doc.querySelectorAll('#pPhSec [data-phe]').forEach(b=>b.onclick=async()=>{const p=PHL.find(x=>x.id===b.dataset.phe);if(!p)return;const t=w.prompt('Caption for this photo:',p.label||w.phAuto(c,p.stage,0));if(t==null)return;b.disabled=true;try{await deskCall('labelPhoto',{id:p.id,label:t.trim()});PHL=await deskCall('photoList',{school:sc.id});phRedo(doc,c,no);redraw()}catch(e){b.disabled=false;deskAsk(String(e.error||e),'OK')}});
    const pp=$d('pPhPortal');if(pp)pp.onclick=e=>{e.preventDefault();window.__desk.photos(no,db.period)};
    doc.querySelectorAll('#pPhSec [data-phx]').forEach(b=>b.onclick=async()=>{b.disabled=true;try{await deskCall('delPhoto',{id:b.dataset.phx});PHL=await deskCall('photoList',{school:sc.id});phRedo(doc,c,no);redraw()}catch(e){b.disabled=false;deskAsk(String(e.error||e),'OK')}});
    ['pPhCam','pPhFile'].forEach(id=>{const inp=$d(id);if(inp)inp.onchange=async()=>{const files=[...inp.files];if(!files.length)return;const k=kk?kk.value:'Other',msg=$d('pPhMsg'),cap=cc?cc.value:'',dt=dd?dd.value:'';
