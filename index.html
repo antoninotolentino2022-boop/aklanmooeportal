@@ -320,7 +320,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <li>Its pages: <b>Checks issued</b> (enter checks), <b>Forms per check</b>, <b>Liquidation &amp; cash advance</b> (quarterly forms and the request), <b>Monthly reports</b>, <b>School setup &amp; rules</b>, and this <b>Help</b>.</li>
 <li>Everything is <b>saved to the portal automatically</b>. Look for <b>All changes saved</b> under the <b>Back to the portal</b> button.</li>
 <li>Your school name, School Head, district bookkeeper and Division signatories come from the portal and cannot be changed in the Desk.</li>
-<li>The Desk shows its version next to the school’s name (for example <b>Desk v40</b>).</li></ul>`},
+<li>The Desk shows its version next to the school’s name (for example <b>Desk v41</b>).</li></ul>`},
 {id:'desk-newcheck',c:'desk',w:'school',t:'Enter a check',k:'new check encode add payee nature of expense purpose items unit qty quantity unit cost total tax withheld check amount invoice OR number date',b:`
 <ol><li>On <b>Checks issued</b>, tap <b>New check</b>.</li>
 <li>Type the <b>check number</b> and <b>check date</b>, the <b>payee</b>, and choose the <b>nature of expense</b> (office supplies, electricity, travel, repairs and so on). The nature decides which forms the check needs.</li>
@@ -529,7 +529,8 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 {id:'f-skip',c:'faq',w:['school','district'],t:'Our check numbers skip. Is that a problem?',k:'check numbers skip gap jump missing integrated special fund drrm',b:`
 <p>Not if the skipped numbers were used by another liquidation of the school: another level of an integrated school, or a special fund such as DRRM. They share one checkbook. Enter those liquidations too, and record spoiled checks as cancelled. ${go('series','More')}</p>`},
 {id:'f-cancel',c:'faq',w:'school',t:'How do I record a spoiled or cancelled check?',k:'spoiled cancelled void check gap',b:`
-<p>Add it with its number and tick <b>Cancelled check</b> (in the portal: Paid by → Cancelled / spoiled check). It keeps the numbers complete and carries no amount.</p>`},
+<p>Add it with its number and tick <b>Cancelled check</b> (in the portal: Paid by → Cancelled / spoiled check). It keeps the numbers complete and carries no amount.</p>
+<p>Take a photo of the cancelled check (marked “Cancelled”) with <b>📷 Photos</b>, the same as any check. It prints with the liquidation, captioned “CANCELLED Check No. …”.</p>`},
 {id:'f-delete',c:'faq',w:'school',t:'How do I remove a check I entered by mistake?',k:'delete remove check mistake',b:`
 <p>Open the check in the Desk and tap <b>Delete check</b> (only while the quarter is not submitted).</p>`},
 {id:'f-reminders',c:'faq',w:'school',t:'Must I fix every yellow reminder?',k:'reminder warning yellow red must fix',b:`
@@ -538,7 +539,7 @@ function helpTopics(o){const S=(o&&o.site)||'tinyurl.com/aklanmooe',go=(id,t)=>'
 <p>Your school, your district and the Division. Other schools cannot see it.</p>`},
 {id:'f-rules',c:'faq',w:'all',t:'The district or Accounting told us something different from the Help. Who wins?',k:'rules different instruction accounting district official policy',b:`
 <p>Follow your district and the Accounting Unit. The portal is a Division of Aklan pilot; its rules follow the Division training of October 2026 and can be changed by the Division. Tell the developer through the Support page so the portal can be updated.</p>`},
-{id:'f-version',c:'faq',w:'all',t:'What does “Desk v40” mean?',k:'version desk v37 v36 update new',b:`
+{id:'f-version',c:'faq',w:'all',t:'What does “Desk v41” mean?',k:'version desk v37 v36 update new',b:`
 <p>It is the version of the Liquidation Desk. Updates do not change what you already encoded; older checks keep their forms unless you choose to apply a new rule to them.</p>`},
 {id:'f-old-rules',c:'faq',w:'school',t:'An older check shows “Apply these rules to this check”. Should I click it?',k:'apply these rules older check new rules update',b:`
 <p>Only if you want that check to follow the newer rules (for example the PO and IAR for furniture and equipment repairs, and the PR grouped by account code). If the check was already signed and submitted, leave it.</p>`},
@@ -830,7 +831,7 @@ const routeName=sc=>sc&&sc.type==='unit'?'Division Accounting':distName(sc&&sc.d
 function detail(){const D=S.D,x=D.sub,lv=B.me.level,mineEdit=lv==='school'&&(x.status==='draft'||x.status==='returned'),quick=mineEdit&&!(D.school.type==='school'&&D.school.desk),total=Math.round((x.ca+x.prevAmt)*100)/100,sp=spent(D),bal=Math.round((total-sp-(x.turnoverAmt||0))*100)/100;S.AU=audit(D);
  const ret=x.status==='returned'?D.log.filter(l=>/Returned/.test(l.action)).pop():null;const pc=no=>D.photos.filter(p=>p.checkNo===no).length;
  const rows=D.checks.map(c=>`<tr><td class="nw o1" data-l="Date">${dshort(c.date)}</td><td class="o2" data-l="Ref. no.">${esc(c.no)}<br><span class="mode">${esc(c.mode||'Check')}</span></td><td class="o4 w1">${c.mode==='Cancelled'?'<b>CANCELLED</b>':esc(c.payee)}<div class="muted small">${esc(c.nature)}</div>${(c.receipts||[]).length?`<div class="rcp">${c.receipts.map(r=>`<b>${esc(r.no||'no number')}</b>${r.date?' · '+dshort(r.date):''} · ₱${peso(r.amount)}`).join('<br>')}${c.tax?'<br>Tax withheld ₱'+peso(c.tax):''}</div>`:''}${flags(c).map(t=>`<div class="flag">⚠ ${esc(t)}</div>`).join('')}</td><td class="small o5 w1" data-l="Account code">${c.lines?c.lines.map(([k,a])=>`${esc(k)}<br><span class="muted">₱${peso(a)}</span>`).join('<br>'):esc(c.code)}</td><td class="num o3" data-l="Amount">${peso(c.amount)}</td>
-  <td class="o6 w1"><div class="acts">${c.mode==='Cancelled'?'':`<button class="btn sm" data-rcp="${esc(c.id)}">Receipts (${(c.receipts||[]).length})</button><button class="btn sm" data-photos="${esc(c.no)}">Photos (${pc(c.no)})</button>`}${quick?`<button class="btn sm link" data-del="${esc(c.id)}" aria-label="Delete check">Delete</button>`:''}</div></td></tr>`).join('');
+  <td class="o6 w1"><div class="acts">${c.mode==='Cancelled'?`<button class="btn sm" data-photos="${esc(c.no)}">Photos (${pc(c.no)})</button>`:`<button class="btn sm" data-rcp="${esc(c.id)}">Receipts (${(c.receipts||[]).length})</button><button class="btn sm" data-photos="${esc(c.no)}">Photos (${pc(c.no)})</button>`}${quick?`<button class="btn sm link" data-del="${esc(c.id)}" aria-label="Delete check">Delete</button>`:''}</div></td></tr>`).join('');
  const U=D.school.type==='unit',FD=!!x.fund;
  return `${lv!=='school'||U?`<button class="btn link" id="back">← Back to the list</button>`:FD?`<button class="btn link" id="back">← Back to ${esc(qLabel(S.q))}</button>`:''}
  <div class="row" style="justify-content:space-between;align-items:flex-start;margin:6px 0 4px"><div class="ohead">${D.school.logo?`<img src="${D.school.logo}" alt="${esc(D.school.name)} logo">`:''}<div><h1>${esc(U&&x.title?x.title:D.school.name)}</h1><p class="sub" style="margin:0">${U?esc(D.school.name)+' · Division unit':esc(distName(D.school.district))} · ${FD?'<b>'+(/^(elem|jhs|shs)$/.test(x.kind||'')?'':'Special fund: ')+esc(x.title||FUNDK[x.kind]||'')+'</b>':qLabel(S.q)} · ${U?'Head':'School Head'}: ${esc(D.school.head)}</p></div></div>${pill(x.status)}</div>
@@ -1050,6 +1051,7 @@ const phLowP=t=>/^[A-Z][a-z]/.test(t)?t[0].toLowerCase()+t.slice(1):t;
 function phCaption(c,stage,i,also){const h=phHint(c.no)||{},who=String(h.payee||c.payee||'').trim(),it=[...new Set([c,...(also||[])].flatMap(phItems))],
   list=it.length>3?it.slice(0,3).join('; ')+' and '+(it.length-3)+' more item'+(it.length>4?'s':''):phAndP(it),pur=String(h.purpose||c.nature||'').trim()||list,
   F=phFundP(),ck=phChkP(c,also),rc=phRcsP(c,also),from=who?' from '+who:'';
+ if(stage==='Check'&&c.mode==='Cancelled')return `CANCELLED Check No. ${c.no}${c.date?' dated '+dlong(c.date):''}, marked “Cancelled” and kept with the liquidation, ${F}.`;
  if(stage==='Check')return `${c.mode&&c.mode!=='Check'?c.mode+' ref.':'Check'} No. ${c.no} dated ${dlong(c.date)}, payable to ${c.payee}, ₱${peso(c.amount)}, charged to ${F}.`;
  if(stage==='Receipt'){const R=phRcpts(c);return R.length?phRcpt(c,R[Math.min(i||0,R.length-1)]):'Official receipt'+from+', paid under '+ck+', charged to '+F+'.'}
  if(stage==='Items delivered')return 'Delivery of '+(list||pur)+from+(rc?', '+rc:'')+', paid under '+ck+', charged to '+F+'.';
@@ -1062,7 +1064,7 @@ function phCaption(c,stage,i,also){const h=phHint(c.no)||{},who=String(h.payee||
  return pur+tail}
 /* what to photograph next for this check: the check, then each receipt, then what its kind of expense calls for */
 const phList=c=>(S.D&&S.D.photos||[]).filter(p=>p.checkNo===c.no);
-const phStage=c=>{const L=phList(c),n=k=>L.filter(p=>p.stage===k).length,h=phHint(c.no);if(c.mode!=='Cash'&&!n('Check'))return 'Check';if(n('Receipt')<Math.max(1,phRcpts(c).length))return 'Receipt';const st=(h&&PH_STAGE[h.type])||'Before';return st==='Items delivered'&&n('Items delivered')?'Distribution':st};
+const phStage=c=>{const L=phList(c),n=k=>L.filter(p=>p.stage===k).length,h=phHint(c.no);if(c.mode==='Cancelled')return n('Check')?'Other':'Check';if(c.mode!=='Cash'&&!n('Check'))return 'Check';if(n('Receipt')<Math.max(1,phRcpts(c).length))return 'Receipt';const st=(h&&PH_STAGE[h.type])||'Before';return st==='Items delivered'&&n('Items delivered')?'Distribution':st};
 const phRi=c=>phList(c).filter(p=>p.stage==='Receipt').length;
 const phPeersP=c=>(S.D&&S.D.checks||[]).filter(k=>k.no&&k.no!==c.no&&k.mode!=='Cancelled'),phAlso=c=>phPeersP(c).filter(k=>(S.phAlso||[]).includes(k.no));
 function phSugs(c,stage){if(stage==='Receipt')return phRcpts(c).map(r=>phRcpt(c,r));if(stage==='Check')return [phCaption(c,'Check')];const out=[];[phCaption(c,stage,0,phAlso(c)),phCaption(c,'Items delivered',0,phAlso(c)),String((phHint(c.no)||{}).purpose||c.nature||''),...phItems(c)].forEach(t=>{t=String(t||'').trim();if(t&&!out.includes(t))out.push(t)});return out.slice(0,10)}
@@ -1554,7 +1556,7 @@ async function openDesk(){const sc=S.D.school,D0=S.D;const back=$('#app').innerH
    after:(doc,DB)=>{DESK_LOCK.forEach(k=>doc.querySelectorAll(`[data-s="${k}"]`).forEach(e=>{e.disabled=true;e.title='Set in the portal'}));DESK_LOCKR.forEach(k=>doc.querySelectorAll(`[data-r="${k}"]`).forEach(e=>{e.disabled=true;e.title='Set by the Division in the portal'}));
     const m=doc.getElementById('main');if(!m)return;const notes=[];
     const gd=doc.getElementById('goDocs'),fno=doc.getElementById('f-no'),no=fno?String(fno.value||'').trim():'',ck=no&&DB.checks.find(c=>String(c.no||'').trim()===no);
-    if(gd&&!doc.getElementById('pPhotos')&&ck&&ck.date&&!ck.cancelled&&!(ck.start&&!ck.dated)){const n=PHL.filter(p=>String(p.checkNo)===no).length,b=doc.createElement('button');b.id='pPhotos';b.textContent='📷 Photos'+(n?' ('+n+')':'');b.title='Take or choose photos of the check, its receipts and the items';
+    if(gd&&!doc.getElementById('pPhotos')&&ck&&(ck.date||ck.cancelled)&&!(ck.start&&!ck.dated)){const n=PHL.filter(p=>String(p.checkNo)===no).length,b=doc.createElement('button');b.id='pPhotos';b.textContent='📷 Photos'+(n?' ('+n+')':'');b.title='Take or choose photos of the check, its receipts and the items';
      b.onclick=()=>{const e=doc.getElementById('pPhSec');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})};gd.insertAdjacentElement('afterend',b);
      const sec=gd.closest('.section');if(sec&&!doc.getElementById('pPhSec')){sec.insertAdjacentHTML('afterend',phSec(doc,ck,no));phWire(doc,ck,no)}
      const ej=doc.querySelector('.edjump');if(ej&&!doc.getElementById('pPhJ')){const j=doc.createElement('button');j.type='button';j.id='pPhJ';j.className='jmp ph';j.textContent='📷 Photos'+(n?' ('+n+')':'');j.onclick=b.onclick;ej.appendChild(j)}}
